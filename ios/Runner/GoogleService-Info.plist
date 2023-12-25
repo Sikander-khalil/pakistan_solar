@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>606610823060-48v4sesfgccuej5hlr39lrp78kof2hti.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.606610823060-48v4sesfgccuej5hlr39lrp78kof2hti</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>606610823060-6clfve8shm3se3ohk4aif25529fmj28q.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAucguDyzOJTIq0pPse2Qgv3XNxJjIvU98</string>
+	<key>GCM_SENDER_ID</key>
+	<string>606610823060</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.pakistanSolarMarket</string>
+	<key>PROJECT_ID</key>
+	<string>pakistansolar-market</string>
+	<key>STORAGE_BUCKET</key>
+	<string>pakistansolar-market.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:606610823060:ios:13d2a0043d97270e6ae181</string>
+	<key>DATABASE_URL</key>
+	<string>https://pakistansolar-market-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
