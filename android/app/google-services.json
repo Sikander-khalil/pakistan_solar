@@ -1,52 +1,27 @@
 {
   "project_info": {
-    "project_number": "606610823060",
-    "firebase_url": "https://pakistansolar-market-default-rtdb.firebaseio.com",
-    "project_id": "pakistansolar-market",
-    "storage_bucket": "pakistansolar-market.appspot.com"
+    "project_number": "356715979644",
+    "firebase_url": "https://pakistan-solar-fefaa-default-rtdb.firebaseio.com",
+    "project_id": "pakistan-solar-fefaa",
+    "storage_bucket": "pakistan-solar-fefaa.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:606610823060:android:5db50a6dce46c18a6ae181",
+        "mobilesdk_app_id": "1:356715979644:android:3e3ae82bb4a1d56e303af9",
         "android_client_info": {
           "package_name": "com.example.pakistan_solar_market"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "606610823060-3djh87remphimvsmes26955orthmp6sd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.pakistan_solar_market",
-            "certificate_hash": "0f678e070a788600377c56ba7d341ad5a715dc25"
-          }
-        },
-        {
-          "client_id": "606610823060-nrla0nn9cve15b55mlhkol2mg41c2q7m.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBy4DiFUss4JHfxkZuaOCN-GPuLv1Zzsck"
+          "current_key": "AIzaSyDU72zI5ehShs3bcL2t6-wcX9l1F5YuJ90"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "606610823060-ioogiu9mukkjl4pcr5sscgjucdfs8pqv.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "606610823060-48v4sesfgccuej5hlr39lrp78kof2hti.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.pakistanSolarMarket"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

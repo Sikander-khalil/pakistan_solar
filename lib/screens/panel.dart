@@ -4,9 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:pakistan_solar_market/services/market_service.dart';
-import 'package:pakistan_solar_market/widgets/signup_screen.dart';
+
+import '../services/market_service.dart';
 
 class PanelMarket extends StatefulWidget {
   const PanelMarket({super.key});
@@ -19,13 +18,13 @@ class _PanelMarketState extends State<PanelMarket>
     with SingleTickerProviderStateMixin {
   User? user = FirebaseAuth.instance.currentUser;
   DatabaseReference _userRef =
-      FirebaseDatabase.instance.reference().child('formatDate');
+  FirebaseDatabase.instance.reference().child('formatDate');
   String? date; // Nullable String
   String? price; // Nullable String
   String? avalaible; // Nullable String
 
   DatabaseReference _userRef2 =
-      FirebaseDatabase.instance.reference().child('users');
+  FirebaseDatabase.instance.reference().child('users');
 
   List<Map<String, dynamic>> userData = [];
   List<Map<String, dynamic>> userData2 = [];
@@ -38,7 +37,7 @@ class _PanelMarketState extends State<PanelMarket>
 
       if (snapshot.snapshot.value != null) {
         Map<dynamic, dynamic>? usersData =
-            snapshot.snapshot.value as Map<dynamic, dynamic>?;
+        snapshot.snapshot.value as Map<dynamic, dynamic>?;
 
         if (usersData != null) {
           List<Map<String, dynamic>> fetchedData = [];
@@ -85,7 +84,7 @@ class _PanelMarketState extends State<PanelMarket>
 
       if (snapshot.snapshot.value != null) {
         Map<dynamic, dynamic>? usersData =
-            snapshot.snapshot.value as Map<dynamic, dynamic>?;
+        snapshot.snapshot.value as Map<dynamic, dynamic>?;
 
         if (usersData != null) {
           List<Map<String, dynamic>> fetchedData = [];
@@ -132,7 +131,7 @@ class _PanelMarketState extends State<PanelMarket>
 
       if (snapshot.snapshot.value != null) {
         Map<dynamic, dynamic>? usersData =
-            snapshot.snapshot.value as Map<dynamic, dynamic>?;
+        snapshot.snapshot.value as Map<dynamic, dynamic>?;
 
         if (usersData != null) {
           List<Map<String, dynamic>> fetchedData = [];
@@ -177,7 +176,7 @@ class _PanelMarketState extends State<PanelMarket>
 
       if (snapshot.snapshot.value != null) {
         Map<dynamic, dynamic>? usersData =
-            snapshot.snapshot.value as Map<dynamic, dynamic>?;
+        snapshot.snapshot.value as Map<dynamic, dynamic>?;
 
         if (usersData != null) {
           List<Map<String, dynamic>> fetchedData = [];
@@ -239,7 +238,7 @@ class _PanelMarketState extends State<PanelMarket>
     DatabaseEvent dataSnapshot = await _userRef.once();
     if (dataSnapshot.snapshot.value != null) {
       Map<dynamic, dynamic>? data =
-          dataSnapshot.snapshot.value as Map<dynamic, dynamic>?;
+      dataSnapshot.snapshot.value as Map<dynamic, dynamic>?;
 
       if (data != null) {
         setState(() {
@@ -296,31 +295,31 @@ class _PanelMarketState extends State<PanelMarket>
                         children: [
                           avalaible != null
                               ? Text(
-                                  avalaible!,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold),
-                                )
+                            avalaible!,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
+                          )
                               : Text("available"),
                           date != null
                               ? Text(
-                                  date!,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.bold),
-                                )
+                            date!,
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold),
+                          )
                               : Text("date"),
                           price != null
                               ? Text(
-                                  price!,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )
+                            price!,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          )
                               : Text("price")
                         ],
                       ),
@@ -346,14 +345,14 @@ class _PanelMarketState extends State<PanelMarket>
             ),
             Expanded(
                 child: TabBarView(
-              controller: _tabController,
-              children: [
-                MarketServices.buildCategoryList(userData, context),
-                MarketServices.buildCategoryList2(userData2, context),
-                MarketServices.buildCategoryList3(userData3, context),
-                MarketServices.buildCategoryList4(userData4, context)
-              ],
-            ))
+                  controller: _tabController,
+                  children: [
+                    MarketServices.buildCategoryList(userData, context),
+                    MarketServices.buildCategoryList2(userData2, context),
+                    MarketServices.buildCategoryList3(userData3, context),
+                    MarketServices.buildCategoryList4(userData4, context)
+                  ],
+                ))
           ],
         ),
       ),

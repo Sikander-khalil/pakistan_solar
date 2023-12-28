@@ -5,7 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
-import 'package:pakistan_solar_market/widgets/signup_screen.dart';
+
+import '../screens/login_screen.dart';
+
+
 
 
 class AddPost extends StatefulWidget {
@@ -37,7 +40,7 @@ class _AddPostState extends State<AddPost> {
   String subcategoryPrefix = '';
 
   DatabaseReference _userRef2 =
-      FirebaseDatabase.instance.reference().child('home');
+  FirebaseDatabase.instance.reference().child('home');
 
   String _selectedSize = '';
   String _selectedLocation = '';
@@ -47,6 +50,36 @@ class _AddPostState extends State<AddPost> {
   TextEditingController availableController = TextEditingController();
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  dynamic userkey;
+
+  @override
+  void initState() {
+    super.initState();
+    getAllUserData();
+  }
+
+  Future<void> getAllUserData() async {
+    DatabaseReference _userRef =
+    FirebaseDatabase.instance.reference().child('users');
+
+    DatabaseEvent dataSnapshot = await _userRef.once();
+
+    if (dataSnapshot.snapshot.value != null) {
+      Map<dynamic, dynamic> users = dataSnapshot.snapshot.value as Map;
+
+      users.forEach((key, value) {
+        // var fullName = value['fullName'];
+        // var phone = value['phone'];
+
+        userkey = key;
+        // print('Full Name: $fullName');
+        // print('Phone: $phone');
+      });
+    } else {
+      print('No data found');
+    }
+  }
 
   var _type = ["Buyer", "Seller"];
 
@@ -92,7 +125,7 @@ class _AddPostState extends State<AddPost> {
                         });
                       },
                       value:
-                          _selectedValue2.isNotEmpty ? _selectedValue2 : null,
+                      _selectedValue2.isNotEmpty ? _selectedValue2 : null,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
@@ -129,7 +162,7 @@ class _AddPostState extends State<AddPost> {
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(),
                                   hintText:
-                                      'Enter your text', // Optional placeholder text
+                                  'Enter your text', // Optional placeholder text
 
                                   // You can add other InputDecoration properties here
                                 ),
@@ -146,16 +179,16 @@ class _AddPostState extends State<AddPost> {
                                         _noselected =
                                             newValue; // Update selected Subcategory
                                         _selectedValue =
-                                            _DropdownValues[newValue] != null &&
-                                                    _DropdownValues[newValue]!
-                                                        .isNotEmpty
-                                                ? _DropdownValues[newValue]![0]
-                                                : '';
+                                        _DropdownValues[newValue] != null &&
+                                            _DropdownValues[newValue]!
+                                                .isNotEmpty
+                                            ? _DropdownValues[newValue]![0]
+                                            : '';
                                       });
                                     }
                                   },
                                   items:
-                                      _DropdownValues.keys.map((String item) {
+                                  _DropdownValues.keys.map((String item) {
                                     return DropdownMenuItem<String>(
                                       value: item,
                                       child: InkWell(
@@ -165,6 +198,10 @@ class _AddPostState extends State<AddPost> {
                                                 item; // Update selected Subcategory on tap
                                           });
 
+                                          if (_noselected.isNotEmpty) {
+                                            Navigator.pop(context);
+                                          }
+
                                           showModalBottomSheet(
                                             context: context,
                                             builder: (BuildContext context) {
@@ -172,29 +209,29 @@ class _AddPostState extends State<AddPost> {
                                                 height: 200,
                                                 child: SingleChildScrollView(
                                                   scrollDirection:
-                                                      Axis.vertical,
+                                                  Axis.vertical,
                                                   child: Column(
                                                     children:
-                                                        _DropdownValues[item]!
-                                                            .map(
-                                                                (String value) {
-                                                      return Padding(
-                                                        padding:
+                                                    _DropdownValues[item]!
+                                                        .map(
+                                                            (String value) {
+                                                          return Padding(
+                                                            padding:
                                                             const EdgeInsets
                                                                 .all(8.0),
-                                                        child: ListTile(
-                                                          title: Text(value),
-                                                          onTap: () {
-                                                            setState(() {
-                                                              _selectedValue =
-                                                                  value;
-                                                            });
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                        ),
-                                                      );
-                                                    }).toList(),
+                                                            child: ListTile(
+                                                              title: Text(value),
+                                                              onTap: () {
+                                                                setState(() {
+                                                                  _selectedValue =
+                                                                      value;
+                                                                });
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                            ),
+                                                          );
+                                                        }).toList(),
                                                   ),
                                                 ),
                                               );
@@ -203,7 +240,7 @@ class _AddPostState extends State<AddPost> {
                                         },
                                         child: Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(item),
                                             Icon(
@@ -235,11 +272,12 @@ class _AddPostState extends State<AddPost> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: numberController,
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
+                                  BorderRadius.all(Radius.circular(8))),
                               hintText: ' Enter Number',
                             ),
                           ),
@@ -271,11 +309,11 @@ class _AddPostState extends State<AddPost> {
                               });
                             },
                             value:
-                                _selectedSize.isNotEmpty ? _selectedSize : null,
+                            _selectedSize.isNotEmpty ? _selectedSize : null,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               contentPadding:
-                                  EdgeInsets.fromLTRB(10, 20, 10, 20),
+                              EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
                               hintText: 'Select Size',
@@ -303,7 +341,7 @@ class _AddPostState extends State<AddPost> {
                             decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(8))),
+                                  BorderRadius.all(Radius.circular(8))),
                               hintText: 'Enter Price',
                             ),
                             validator: (value) {
@@ -314,7 +352,7 @@ class _AddPostState extends State<AddPost> {
                               return null;
                             },
                             keyboardType:
-                                TextInputType.numberWithOptions(decimal: true),
+                            TextInputType.numberWithOptions(decimal: true),
                           ),
                         ),
                       ),
@@ -351,7 +389,7 @@ class _AddPostState extends State<AddPost> {
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                               contentPadding:
-                                  EdgeInsets.fromLTRB(10, 20, 10, 20),
+                              EdgeInsets.fromLTRB(10, 20, 10, 20),
                               filled: true,
                               fillColor: Colors.grey[200],
                               hintText: ' Locations',
@@ -397,7 +435,7 @@ class _AddPostState extends State<AddPost> {
                             var number = numberController.text.trim();
                             var price = priceController.text.trim();
                             var available = availableController.text.trim();
-                            if (user != null) {
+                            if (user != null && userkey !=null) {
                               ProgressDialog progressDialog = ProgressDialog(
                                 context,
                                 title: const Text(
@@ -447,17 +485,17 @@ class _AddPostState extends State<AddPost> {
                                     'Home Cat': homeCatValue,
                                     'Price': price
                                   };
-                                  String userId =
-                                      FirebaseAuth.instance.currentUser!.uid;
 
-                                  DatabaseReference postRef = FirebaseDatabase
-                                      .instance
+
+
+                                  DatabaseReference userPostsRef =
+                                  FirebaseDatabase.instance
                                       .reference()
                                       .child('users')
-                                      .child(userId);
-                                  String? postId = postRef.push().key;
+                                      .child(userkey);
+                                  String? postId = userPostsRef.push().key;
 
-                                  await postRef
+                                  await userPostsRef
                                       .child(subcategoryPrefix)
                                       .child(postId!)
                                       .set({
@@ -503,7 +541,7 @@ class _AddPostState extends State<AddPost> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => SignUpScreen()));
+                                        builder: (context) => LoginScreen()));
                               });
                             }
                           },

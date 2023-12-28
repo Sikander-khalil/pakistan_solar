@@ -75,7 +75,7 @@ class MarketServices {
                                   Dialogue.dialogeBox(context);
                                 },
                                 child: Text(
-                                  longiData['fullName'].substring(0, 8) ??
+                                  longiData['fullName'] ??
                                       longiData['fullName'],
                                   style: TextStyle(
                                     color: Colors.black87,
@@ -247,8 +247,7 @@ class MarketServices {
                                   Dialogue.dialogeBox(context);
                                 },
                                 child: Text(
-                                  jinkoData['fullName'].substring(0, 8) ??
-                                      jinkoData['fullName'],
+                                  jinkoData['fullName'],
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: screenHeight * 0.018,
@@ -419,8 +418,8 @@ class MarketServices {
                                   Dialogue.dialogeBox(context);
                                 },
                                 child: Text(
-                                  JaData['fullName'].substring(0, 8) ??
-                                      JaData['fullName'],
+                                  JaData['fullName']
+                                      ,
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: screenHeight * 0.018,
@@ -591,8 +590,7 @@ class MarketServices {
                                   Dialogue.dialogeBox(context);
                                 },
                                 child: Text(
-                                  CaData['fullName'].substring(0, 8) ??
-                                      CaData['fullName'],
+                                  CaData['fullName'],
                                   style: TextStyle(
                                     color: Colors.black87,
                                     fontSize: screenHeight * 0.018,

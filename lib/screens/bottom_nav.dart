@@ -3,13 +3,9 @@ import 'package:pakistan_solar_market/widgets/add_post.dart';
 import 'package:pakistan_solar_market/screens/home_screen.dart';
 import 'package:pakistan_solar_market/screens/panel.dart';
 
-
-
 import 'inverter_market.dart';
 
-
 class BottomNavScreen extends StatefulWidget {
-
   BottomNavScreen({Key? key}) : super(key: key);
 
   @override
@@ -20,7 +16,6 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   int _tabIndex = 0;
 
   List<Widget> _pages = [
-
     HomeScreen(),
     PanelMarket(),
     AddPost(),
@@ -35,7 +30,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         selectedLabelStyle: TextStyle(fontSize: 14),
-         elevation: 10,
+        elevation: 10,
         unselectedLabelStyle: TextStyle(fontSize: 14.0),
         unselectedItemColor: Color(0xff546481),
         type: BottomNavigationBarType.fixed,
@@ -47,20 +42,20 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             _tabIndex = index;
           });
         },
-        items:  <BottomNavigationBarItem>[
+        items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Image.asset(
-
-
-              "assets/images/home.png",fit: BoxFit.cover,
+              "assets/images/home.png",
+              fit: BoxFit.cover,
               width: 30,
               height: 30,
             ),
             label: 'HOME',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset("assets/images/solar-panel.png",fit: BoxFit.cover,
-
+            icon: Image.asset(
+              "assets/images/solar-panel.png",
+              fit: BoxFit.cover,
               width: 30,
               height: 30,
             ),
@@ -68,8 +63,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
           ),
           BottomNavigationBarItem(
             icon: Container(
-
-              width: 45,
+                width: 45,
                 height: 45,
                 decoration: BoxDecoration(
                   color: Color(0xff18be88),
@@ -77,19 +71,26 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Icon(Icons.add, color: Colors.white,),
+                  child: Icon(
+                    Icons.add,
+                    color: Colors.white,
+                  ),
                 )),
             label: '',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset("assets/images/solar-inverter.png",fit: BoxFit.cover,
+            icon: Image.asset(
+              "assets/images/solar-inverter.png",
+              fit: BoxFit.cover,
               width: 30,
               height: 30,
             ),
             label: 'Inverters',
           ),
           BottomNavigationBarItem(
-            icon: Image.asset("assets/images/settings.png",fit: BoxFit.cover,
+            icon: Image.asset(
+              "assets/images/settings.png",
+              fit: BoxFit.cover,
               width: 30,
               height: 30,
             ),

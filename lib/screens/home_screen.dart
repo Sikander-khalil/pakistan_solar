@@ -20,6 +20,13 @@ class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
   DatabaseReference _userRef =
       FirebaseDatabase.instance.reference().child('formatDate');
+
+  DatabaseReference _chinarateRef =
+      FirebaseDatabase.instance.reference().child('ChinaRate');
+
+  String chinatitle = '';
+  String chinadesc = '';
+
   String? date; // Nullable String
   String? price; // Nullable String
   String? avalaible; // Nullable String
@@ -30,11 +37,33 @@ class _HomeScreenState extends State<HomeScreen>
 
   late TabController _tabController;
 
+  Future<String?> getChinaRateTitle() async {
+    DatabaseReference chinaRateRef =
+        FirebaseDatabase.instance.reference().child('ChinaRate');
+
+    DatabaseEvent snapshot = await chinaRateRef.once();
+
+    if (snapshot.snapshot.value != null) {
+      Map<dynamic, dynamic> chinaRateData = snapshot.snapshot.value as Map;
+      String title = chinaRateData['title'];
+
+      chinatitle = title;
+      String description = chinaRateData['description'];
+
+      chinadesc = description;
+
+      return title;
+    } else {
+      return null;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     getData();
+    getChinaRateTitle();
     _fetchData();
   }
 
@@ -167,7 +196,6 @@ class _HomeScreenState extends State<HomeScreen>
                 Tab(text: 'Market'),
                 Tab(text: 'China Rate'),
                 Tab(text: 'News'),
-                Tab(text: 'Verified Companies'),
               ],
               controller: _tabController,
             ),
@@ -176,9 +204,8 @@ class _HomeScreenState extends State<HomeScreen>
               controller: _tabController,
               children: [
                 _buildCategoryList(dataList, dataList),
-                _buildCategoryList(dataList, dataList),
-                _buildCategoryList(dataList, dataList),
-                _buildCategoryList(dataList, dataList),
+                _buildCategoryList2(chinatitle, chinadesc),
+                _buildCategoryList3(dataList),
               ],
             ))
           ],
@@ -191,139 +218,207 @@ class _HomeScreenState extends State<HomeScreen>
       List<dynamic> categories, List<dynamic> categories2) {
     return categories.isNotEmpty
         ? SingleChildScrollView(
-
-
-          child: Column(
-            children: [
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      "Panel Market",
-                      style: TextStyle(
-                          color: Color(0xff18be88),
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => PanelMarket()));
-                },
-                child: ListView.separated(
-
-                  physics: NeverScrollableScrollPhysics(),
-
-                  shrinkWrap: true,
-
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    Map data = categories[index];
-
-                    String homeCat = data["Home Cat"] ??
-                        ''; // Ensure data["Home Cat"] is not null
-                    String abbreviatedHomeCat =
-                        homeCat.substring(0, min(homeCat.length, 5));
-                    return ListTile(
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        child: CircleAvatar(
-                          backgroundColor: Color(0xff71ACDA8E),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(abbreviatedHomeCat),
-                          ),
-                        ),
-                      ),
-                      title: Text(data['Home Cat']),
-                      trailing: Text(
-                        data["Price"],
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        "Panel Market",
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
+                            color: Color(0xff18be88),
+                            fontSize: 25,
                             fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(),
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 20),
-                    child: Text(
-                      "Inverter Market",
-                      style: TextStyle(
-                          color: Color(0xff18be88),
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => InverterMarket()));
-                },
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: categories2.length,
-                  itemBuilder: (context, index) {
-                    Map data2 = categories2[index];
-                    String homeCat2 = data2["Home Cat"] ??
-                        ''; // Ensure data["Home Cat"] is not null
-                    String abbreviatedHomeCat =
-                        homeCat2.substring(0, min(homeCat2.length, 5));
-                    return ListTile(
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        child: CircleAvatar(
-                          backgroundColor: Color(0xff71ACDA8E),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Text(abbreviatedHomeCat),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PanelMarket()));
+                  },
+                  child: ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      Map data = categories[index];
+
+                      String homeCat = data["Home Cat"] ??
+                          ''; // Ensure data["Home Cat"] is not null
+                      String abbreviatedHomeCat =
+                          homeCat.substring(0, min(homeCat.length, 5));
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          child: CircleAvatar(
+                            backgroundColor: Color(0xff71ACDA8E),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(abbreviatedHomeCat),
+                            ),
                           ),
                         ),
-                      ),
-                      title: Text(data2["Home Cat"]),
-                      trailing: Text(
-                        data2["Price"],
+                        title: Text(data['Home Cat']),
+                        trailing: Text(
+                          data["Price"],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 20),
+                      child: Text(
+                        "Inverter Market",
                         style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 18,
+                            color: Color(0xff18be88),
+                            fontSize: 25,
                             fontWeight: FontWeight.bold),
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(),
+                    ),
+                  ],
                 ),
-              )
-            ],
-          ),
-        )
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => InverterMarket()));
+                  },
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: categories2.length,
+                    itemBuilder: (context, index) {
+                      Map data2 = categories2[index];
+                      String homeCat2 = data2["Home Cat"] ??
+                          ''; // Ensure data["Home Cat"] is not null
+                      String abbreviatedHomeCat =
+                          homeCat2.substring(0, min(homeCat2.length, 5));
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          child: CircleAvatar(
+                            backgroundColor: Color(0xff71ACDA8E),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(abbreviatedHomeCat),
+                            ),
+                          ),
+                        ),
+                        title: Text(data2["Home Cat"]),
+                        trailing: Text(
+                          data2["Price"],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                  ),
+                )
+              ],
+            ),
+          )
         : Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildCategoryList3(List<dynamic> categories) {
+    return categories.isNotEmpty
+        ? SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => PanelMarket()));
+                  },
+                  child: ListView.separated(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      Map data = categories[index];
+
+                      String homeCat = data["Home Cat"] ??
+                          ''; // Ensure data["Home Cat"] is not null
+                      String abbreviatedHomeCat =
+                          homeCat.substring(0, min(homeCat.length, 5));
+                      return ListTile(
+                        leading: Container(
+                          width: 40,
+                          height: 40,
+                          child: CircleAvatar(
+                            backgroundColor: Color(0xff71ACDA8E),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(abbreviatedHomeCat),
+                            ),
+                          ),
+                        ),
+                        title: Text(data['Home Cat']),
+                        trailing: Text(
+                          data["Price"],
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (context, index) => Divider(),
+                  ),
+                ),
+              ],
+            ),
+          )
+        : Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildCategoryList2(String title, String description) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        ListTile(
+          title: Text(
+            "Title: ${title}\n",
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18),
+          ),
+          subtitle: Text("Description : $description"),
+          // Displaying the value directly as a string
+        ),
+      ],
+    );
   }
 }
