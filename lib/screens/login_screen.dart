@@ -11,8 +11,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 
-import '../widgets/add_post.dart';
-
 class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -84,18 +82,37 @@ class _LoginScreenState extends State<LoginScreen> {
       String fullName = fullNameController.text.trim();
       String phone = phonecontroller.text.trim();
 
-      String id = DateTime.now().millisecondsSinceEpoch.toString();
+      DatabaseEvent snapshot =
+          await _userRef.orderByChild('phone').equalTo(phone).once();
 
-      await _userRef.child(id).set({
-        'fullName': fullName,
-        'phone': phone,
-      });
+      if (snapshot.snapshot.value != null) {
+        // User already exists, navigate to BottomNavScreen
+        Fluttertoast.showToast(msg: 'Sign In Successful');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavScreen(
+                    initialIndex: 0,
+                  )),
+        );
+      } else {
+        // User doesn't exist, proceed with adding to the database
+        String id = DateTime.now().millisecondsSinceEpoch.toString();
 
-      Fluttertoast.showToast(msg: 'Sign Up Successful');
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
-      // Navigate to another screen after successful signup
-      // Example: Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        await _userRef.child(id).set({
+          'fullName': fullName,
+          'phone': phone,
+        });
+
+        Fluttertoast.showToast(msg: 'Sign Up Successful');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavScreen(
+                    initialIndex: 0,
+                  )),
+        );
+      }
     } catch (e) {
       print('Error during sign up: $e');
       Fluttertoast.showToast(msg: 'Sign Up Failed');
@@ -105,23 +122,45 @@ class _LoginScreenState extends State<LoginScreen> {
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> verifyPhone(BuildContext context) async {
-    await _auth.verifyPhoneNumber(
-      phoneNumber: phonecontroller.text,
-      verificationCompleted: (PhoneAuthCredential credential) async {
-        await _auth.signInWithCredential(credential);
-
-        print("Yes done");
-      },
-      verificationFailed: (FirebaseAuthException e) {
-        print(e.message);
-      },
-      codeSent: (String verificationId, int? resendToken) {
-        setState(() {
-          this.verificationId = verificationId;
-        });
-      },
-      codeAutoRetrievalTimeout: (String verificationId) {},
+    ProgressDialog progressDialog = ProgressDialog(
+      context,
+      title: const Text(
+        'Sending OTP',
+        style: TextStyle(color: Colors.black),
+      ),
+      message: const Text(
+        'Please wait',
+        style: TextStyle(color: Colors.black),
+      ),
+      backgroundColor: Colors.white,
     );
+
+    try {
+      progressDialog.show();
+
+      await Future.delayed(Duration(seconds: 5));
+
+      progressDialog.dismiss();
+
+      await _auth.verifyPhoneNumber(
+        phoneNumber: phonecontroller.text,
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          // Your existing code here
+        },
+        verificationFailed: (FirebaseAuthException e) {
+          print(e.message);
+        },
+        codeSent: (String verificationId, int? resendToken) {
+          setState(() {
+            this.verificationId = verificationId;
+          });
+        },
+        codeAutoRetrievalTimeout: (String verificationId) {},
+      );
+    } catch (e) {
+      print('Error during phone verification: $e');
+      progressDialog.dismiss(); // Dismiss the dialog in case of an error
+    }
   }
 
   void signInWithPhoneAuthCredential(BuildContext context) async {
@@ -148,7 +187,11 @@ class _LoginScreenState extends State<LoginScreen> {
       await _auth.signInWithCredential(credential);
       progressDialog.dismiss();
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => BottomNavScreen()));
+          context,
+          MaterialPageRoute(
+              builder: (context) => BottomNavScreen(
+                    initialIndex: 0,
+                  )));
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }

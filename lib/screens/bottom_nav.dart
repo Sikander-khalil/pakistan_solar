@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pakistan_solar_market/screens/settings_screens.dart';
 import 'package:pakistan_solar_market/widgets/add_post.dart';
 import 'package:pakistan_solar_market/screens/home_screen.dart';
 import 'package:pakistan_solar_market/screens/panel.dart';
@@ -6,7 +7,11 @@ import 'package:pakistan_solar_market/screens/panel.dart';
 import 'inverter_market.dart';
 
 class BottomNavScreen extends StatefulWidget {
-  BottomNavScreen({Key? key}) : super(key: key);
+  final int initialIndex;
+  final String? selectedCategory;
+
+  BottomNavScreen({Key? key, required this.initialIndex, this.selectedCategory})
+      : super(key: key);
 
   @override
   _BottomNavScreenState createState() => _BottomNavScreenState();
@@ -20,8 +25,24 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     PanelMarket(),
     AddPost(),
     InverterMarket(),
-    Placeholder(),
+    SettingsScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _tabIndex = widget.initialIndex;
+    if (_tabIndex == 1) {
+      _pages[_tabIndex] = PanelMarket(
+        selectedCategory: widget.selectedCategory,
+      );
+    }
+    if (_tabIndex == 3) {
+      _pages[_tabIndex] = InverterMarket(
+        selectedCategory: widget.selectedCategory,
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +61,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         onTap: (int index) {
           setState(() {
             _tabIndex = index;
+            if (_tabIndex == 1) {
+              // Inverter Market tab index in your BottomNavigationBar
+              _pages[_tabIndex] =
+                  PanelMarket(selectedCategory: widget.selectedCategory);
+            }
+            if (_tabIndex == 3) {
+              _pages[_tabIndex] =
+                  InverterMarket(selectedCategory: widget.selectedCategory);
+            }
           });
         },
         items: <BottomNavigationBarItem>[

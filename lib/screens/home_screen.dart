@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 import 'package:pakistan_solar_market/screens/inverter_market.dart';
 import 'package:pakistan_solar_market/screens/panel.dart';
 
@@ -58,12 +59,21 @@ class _HomeScreenState extends State<HomeScreen>
     }
   }
 
+  String selectedCategory = ""; // Default category
+
+
+
+
+
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     getData();
     getChinaRateTitle();
+
+
     _fetchData();
   }
 
@@ -72,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen>
       setState(() {
         Map values = snapshot.snapshot.value as Map;
         values.forEach((key, value) {
+
           dataList.add(value); // DataList mein Firebase se mila data add karein
         });
       });
@@ -113,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen>
                   "assets/images/bismallah.png",
                   fit: BoxFit.cover,
                   height: screenHeight * .1,
-                  width: screenWidth * .6,
+                  width: screenWidth * .5,
                 ),
               ],
             ),
@@ -157,7 +168,7 @@ class _HomeScreenState extends State<HomeScreen>
                               : Text("date"),
                           price != null
                               ? Text(
-                                  price!,
+                                  ' RS ${price!}',
                                   style: TextStyle(
                                     color: Colors.black,
                                     fontSize: 18,
@@ -194,8 +205,8 @@ class _HomeScreenState extends State<HomeScreen>
               dividerColor: Colors.grey,
               tabs: [
                 Tab(text: 'Market'),
-                Tab(text: 'China Rate'),
                 Tab(text: 'News'),
+                Tab(text: 'China Rate'),
               ],
               controller: _tabController,
             ),
@@ -240,47 +251,70 @@ class _HomeScreenState extends State<HomeScreen>
                 SizedBox(
                   height: 20,
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PanelMarket()));
-                  },
-                  child: ListView.separated(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      Map data = categories[index];
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    Map data = categories[index];
 
-                      String homeCat = data["Home Cat"] ??
-                          ''; // Ensure data["Home Cat"] is not null
-                      String abbreviatedHomeCat =
-                          homeCat.substring(0, min(homeCat.length, 5));
-                      return ListTile(
-                        leading: Container(
-                          width: 40,
-                          height: 40,
-                          child: CircleAvatar(
-                            backgroundColor: Color(0xff71ACDA8E),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(abbreviatedHomeCat),
-                            ),
+                    String homeCat = data["Home Cat"] ?? '';
+                    String abbreviatedHomeCat =
+                    homeCat.substring(0, min(homeCat.length, 5));
+                    return ListTile(
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xff71ACDA8E),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(abbreviatedHomeCat),
                           ),
                         ),
-                        title: Text(data['Home Cat']),
-                        trailing: Text(
-                          data["Price"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
+                      ),
+                      title: Text(data['Home Cat']),
+                      trailing: Text(
+                        'RS ${data["Price"]}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(),
-                  ),
+                      ),
+                      onTap: () {
+                        String tappedCategory = data['Home Cat'];
+
+                        setState(() {
+                          if (tappedCategory.contains('Canadian')) {
+                            selectedCategory = 'Canadian';
+                          } else if (tappedCategory.contains('Longi')) {
+                            selectedCategory = 'Longi';
+                          } else if (tappedCategory.contains('Jinko')) {
+                            selectedCategory = 'Jinko';
+                          } else if (tappedCategory.contains('JA')) {
+                            selectedCategory = 'JA';
+                          }
+                        });
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavScreen(
+                              initialIndex: 1,
+                              selectedCategory: selectedCategory,
+                            ),
+                          ),
+                        );
+                      },
+
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider();
+                  },
                 ),
+
                 SizedBox(
                   height: 20,
                 ),
@@ -301,47 +335,65 @@ class _HomeScreenState extends State<HomeScreen>
                 SizedBox(
                   height: 20,
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => InverterMarket()));
-                  },
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: categories2.length,
-                    itemBuilder: (context, index) {
-                      Map data2 = categories2[index];
-                      String homeCat2 = data2["Home Cat"] ??
-                          ''; // Ensure data["Home Cat"] is not null
-                      String abbreviatedHomeCat =
-                          homeCat2.substring(0, min(homeCat2.length, 5));
-                      return ListTile(
-                        leading: Container(
-                          width: 40,
-                          height: 40,
-                          child: CircleAvatar(
-                            backgroundColor: Color(0xff71ACDA8E),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(abbreviatedHomeCat),
-                            ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: categories2.length,
+                  itemBuilder: (context, index) {
+                    Map data2 = categories2[index];
+
+                    String homeCat2 = data2["Home Cat"] ??
+                        ''; // Ensure data["Home Cat"] is not null
+                    String abbreviatedHomeCat =
+                        homeCat2.substring(0, min(homeCat2.length, 5));
+                    return ListTile(
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xff71ACDA8E),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(abbreviatedHomeCat),
                           ),
                         ),
-                        title: Text(data2["Home Cat"]),
-                        trailing: Text(
-                          data2["Price"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(),
-                  ),
+                      ),
+                      title: Text(data2["Home Cat"]),
+                      trailing: Text(
+                        'Rs ${data2["Price"]}',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      onTap: () {
+                        String tappedCategory2 = data2['Home Cat'];
+
+                        setState(() {
+                          if (tappedCategory2.contains('Canadian')) {
+                            selectedCategory = 'Canadian';
+                          } else if (tappedCategory2.contains('Longi')) {
+                            selectedCategory = 'Longi';
+                          } else if (tappedCategory2.contains('Jinko')) {
+                            selectedCategory = 'Jinko';
+                          } else if (tappedCategory2.contains('JA')) {
+                            selectedCategory = 'JA';
+                          }
+                        });
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BottomNavScreen(
+                              initialIndex: 3,
+                              selectedCategory: selectedCategory,
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
                 )
               ],
             ),
@@ -357,46 +409,41 @@ class _HomeScreenState extends State<HomeScreen>
                 SizedBox(
                   height: 20,
                 ),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => PanelMarket()));
-                  },
-                  child: ListView.separated(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      Map data = categories[index];
+                ListView.separated(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    Map data = categories[index];
 
-                      String homeCat = data["Home Cat"] ??
-                          ''; // Ensure data["Home Cat"] is not null
-                      String abbreviatedHomeCat =
-                          homeCat.substring(0, min(homeCat.length, 5));
-                      return ListTile(
-                        leading: Container(
-                          width: 40,
-                          height: 40,
-                          child: CircleAvatar(
-                            backgroundColor: Color(0xff71ACDA8E),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(abbreviatedHomeCat),
-                            ),
+                    String homeCat = data["Home Cat"] ??
+                        ''; // Ensure data["Home Cat"] is not null
+                    String abbreviatedHomeCat =
+                        homeCat.substring(0, min(homeCat.length, 5));
+                    return ListTile(
+                      leading: Container(
+                        width: 40,
+                        height: 40,
+                        child: CircleAvatar(
+                          backgroundColor: Color(0xff71ACDA8E),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(abbreviatedHomeCat),
                           ),
                         ),
-                        title: Text(data['Home Cat']),
-                        trailing: Text(
-                          data["Price"],
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) => Divider(),
-                  ),
+                      ),
+                      title: Text(data['Home Cat']),
+                      trailing: Text(
+                        'RS ${data["Price"]}',
+                        style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
                 ),
               ],
             ),

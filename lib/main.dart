@@ -2,8 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 import 'package:pakistan_solar_market/screens/login_screen.dart';
-import 'package:pakistan_solar_market/widgets/add_post.dart';
-
 
 bool isUnavailable = false;
 
@@ -34,8 +32,6 @@ class _MyAppState extends State<MyApp> {
 
     String timePeriod = (currentHour < 12) ? 'AM' : 'PM';
 
-
-
     if (currentHour >= 0 && currentHour < 7) {
       setState(() {
         isUnavailable = true;
@@ -56,6 +52,11 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home:  BottomNavScreen());
+        home: BottomNavScreen(
+          initialIndex: 0,
+        ));
+
+
+
   }
 }
