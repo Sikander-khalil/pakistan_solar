@@ -2,14 +2,16 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:image_picker/image_picker.dart';
+
 import 'package:ndialog/ndialog.dart';
+import 'package:pakistan_solar_market/constant/colors.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
+import 'package:pakistan_solar_market/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -24,60 +26,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final DatabaseReference _userRef =
       FirebaseDatabase.instance.reference().child('users');
-  ImagePicker picker = ImagePicker();
 
-  File? _image;
-
-  String? image;
-
-  Future<String?> uploadImage(var imageFile) async {
-    String uniqueFileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference referenceRoot = FirebaseStorage.instance.ref();
-    Reference referenceDirImages = referenceRoot.child('images');
-    Reference referenceImageToUpload =
-        referenceDirImages.child('$uniqueFileName.jpg');
-    UploadTask uploadTask = referenceImageToUpload.putFile(imageFile);
-    try {
-      await uploadTask.whenComplete(() async {
-        image = await referenceImageToUpload.getDownloadURL();
-        print(image);
-      });
-      return image.toString();
-    } catch (onError) {
-      print("Error: $onError");
-      return null;
-    }
-  }
-
-  Future pickImageGallery() async {
-    final pickedFile =
-        await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      } else {
-        print("'no Image picked");
-      }
-    });
-  }
-
-  String? nameValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Enter your name';
-    }
-    return null;
-  }
-
-  String? phoneValidator(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Enter your phone number';
-    } else if (value.length != 11) {
-      return 'Mobile Number must be 11 digits';
-    }
-    return null;
-  }
-
-  Future<void> signUp() async {
+  Future<void> login() async {
     try {
       String fullName = fullNameController.text.trim();
       String phone = phonecontroller.text.trim();
@@ -87,35 +37,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (snapshot.snapshot.value != null) {
         // User already exists, navigate to BottomNavScreen
-        Fluttertoast.showToast(msg: 'Sign In Successful');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavScreen(
-                    initialIndex: 0,
-                  )),
-        );
-      } else {
-        // User doesn't exist, proceed with adding to the database
-        String id = DateTime.now().millisecondsSinceEpoch.toString();
-
-        await _userRef.child(id).set({
-          'fullName': fullName,
-          'phone': phone,
+        Fluttertoast.showToast(msg: 'Login SuccessFull');
+        Future.delayed(Duration(seconds: 2), () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => BottomNavScreen(initialIndex: 0)));
         });
-
-        Fluttertoast.showToast(msg: 'Sign Up Successful');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavScreen(
-                    initialIndex: 0,
-                  )),
-        );
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Phone Number does not exists, Please Register');
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => RegisterScreen()));
       }
     } catch (e) {
       print('Error during sign up: $e');
-      Fluttertoast.showToast(msg: 'Sign Up Failed');
+      Fluttertoast.showToast(msg: 'Register Failed');
     }
   }
 
@@ -186,12 +123,6 @@ class _LoginScreenState extends State<LoginScreen> {
       progressDialog.show();
       await _auth.signInWithCredential(credential);
       progressDialog.dismiss();
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BottomNavScreen(
-                    initialIndex: 0,
-                  )));
     } on FirebaseAuthException catch (e) {
       print(e.message);
     }
@@ -215,105 +146,113 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 65,
-                      child: ClipOval(
-                        child: _image != null
-                            ? Container(
-                                width: 150,
-                                height: 150,
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Image.asset("assets/images/logo.png",
-                                fit: BoxFit.cover),
+                Padding(
+                  padding: EdgeInsets.only(right: 30, bottom: 100),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BottomNavScreen(initialIndex: 0)));
+                          },
+                          child: Text(
+                            "Skip",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ))
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 50),
+                  child: Text(
+                    "Login",
+                    style: TextStyle(
+                        color: black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 30),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 50),
+                  child: Container(
+                    height: 55,
+                    child: TextFormField(
+                      controller: phonecontroller,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                          hintText: 'Enter your phone number',
+                          border: OutlineInputBorder(),
+                          suffixIcon: TextButton(
+                            onPressed: () => verifyPhone(context),
+                            child: Text(
+                              "Send OTP",
+                              style: TextStyle(color: primaryColor),
+                            ),
+                          )),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 40),
+                  child: Container(
+                    height: 55,
+                    child: TextFormField(
+                      controller: otpController,
+                      decoration: InputDecoration(
+                        hintText: "Enter Your OTP",
+                        border: OutlineInputBorder(),
                       ),
                     ),
-                    Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: InkWell(
-                          onTap: () {
-                            pickImageGallery();
-                          },
-                          child: Container(
-                            height: 36,
-                            width: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Colors.black,
-                            ),
-                            child: Center(
-                                child: Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white,
-                            )),
-                          ),
-                        )),
-                  ],
+                  ),
+                ),
+                Container(
+                  width: 330,
+                  height: 40,
+                  child: MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      signInWithPhoneAuthCredential(context);
+                      login();
+                    },
+                    child: Text(
+                      'Login',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: fullNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Full Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r"[a-zA-Z]+|\s"),
-                      )
-                    ],
-                    validator: nameValidator,
-                  ),
+                Text(
+                  "OR",
+                  style: TextStyle(
+                      color: black, fontWeight: FontWeight.bold, fontSize: 25),
                 ),
-                SizedBox(height: 15.0),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: phonecontroller,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                        hintText: 'Enter your phone number',
-                        border: OutlineInputBorder(),
-                        suffixIcon: TextButton(
-                          onPressed: () => verifyPhone(context),
-                          child: Text("Send OTP"),
-                        )),
-                    validator: phoneValidator,
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    controller: otpController,
-                    decoration: InputDecoration(
-                      hintText: "Enter Your OTP",
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                MaterialButton(
-                  color: Colors.red,
-                  onPressed: () {
-                    signInWithPhoneAuthCredential(context);
-                    signUp();
-                  },
-                  child: Text(
-                    'Log In',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
+                TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterScreen()));
+                    },
+                    child: Text(
+                      "Register",
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ))
               ],
             ),
           ),

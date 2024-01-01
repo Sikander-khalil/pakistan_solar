@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constant/colors.dart';
 import 'login_screen.dart';
+
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -35,8 +37,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
       child: Scaffold(
         body: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
+              SizedBox(height: 100,),
               Text(
                 "Logout Screen",
                 style: TextStyle(
@@ -45,29 +48,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     fontWeight: FontWeight.bold),
               ),
               SizedBox(
-                height: 20,
+                height: 100,
               ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: ListTile(
-                    trailing: InkWell(
-                      onTap: () {
-                        _logout(context);
-                      },
-                      child: Icon(
-                        Icons.logout,
-                        color: Colors.black,
-                        size: 30,
+              Container(
+                width: double.infinity,
+                height: 100,
+                child: Card(
+
+                  color: primaryColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text(
+                          "Logout",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
+                        ),
                       ),
-                    ),
-                    leading: Text(
-                      "Logout",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: InkWell(
+                          onTap: () {
+                            _logout(context);
+                          },
+                          child: Icon(
+                            Icons.logout,
+                            color: Colors.white,
+                            size: 30,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               )

@@ -1,10 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pakistan_solar_market/constant/colors.dart';
+
+import 'package:pakistan_solar_market/screens/register_screen.dart';
 import 'package:pakistan_solar_market/screens/settings_screens.dart';
 import 'package:pakistan_solar_market/widgets/add_post.dart';
 import 'package:pakistan_solar_market/screens/home_screen.dart';
 import 'package:pakistan_solar_market/screens/panel.dart';
-
-import 'inverter_market.dart';
+import 'package:pakistan_solar_market/screens/inverter_market.dart';
+import 'package:pakistan_solar_market/screens/login_screen.dart';
 
 class BottomNavScreen extends StatefulWidget {
   final int initialIndex;
@@ -19,11 +23,12 @@ class BottomNavScreen extends StatefulWidget {
 
 class _BottomNavScreenState extends State<BottomNavScreen> {
   int _tabIndex = 0;
+  User? user = FirebaseAuth.instance.currentUser;
 
   List<Widget> _pages = [
     HomeScreen(),
     PanelMarket(),
-    AddPost(),
+    AddPost(), // Make sure AddPost() is initially placed at the correct index
     InverterMarket(),
     SettingsScreen(),
   ];
@@ -32,22 +37,118 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
   void initState() {
     super.initState();
     _tabIndex = widget.initialIndex;
-    if (_tabIndex == 1) {
-      _pages[_tabIndex] = PanelMarket(
-        selectedCategory: widget.selectedCategory,
-      );
-    }
-    if (_tabIndex == 3) {
-      _pages[_tabIndex] = InverterMarket(
-        selectedCategory: widget.selectedCategory,
-      );
-    }
+    _handleTabSelection(_tabIndex);
+  }
+
+  void _handleTabSelection(int index) {
+    setState(() {
+      if (index == 2 && user == null) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("LOGIN OR REGISTER"),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Register",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      } else if (index == 4 && user == null) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("LOGIN OR REGISTER"),
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Login",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => RegisterScreen()),
+                      );
+                    },
+                    child: Text(
+                      "Register",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      } else {
+        _tabIndex = index;
+      }
+
+      // Update the pages according to tab selection
+      if (_tabIndex == 1) {
+        _pages[_tabIndex] =
+            PanelMarket(selectedCategory: widget.selectedCategory);
+      } else if (_tabIndex == 3) {
+        _pages[_tabIndex] =
+            InverterMarket(selectedCategory: widget.selectedCategory);
+      } else if (_tabIndex == 4 && user != null) {
+        _pages[_tabIndex] = SettingsScreen();
+      } else if (_tabIndex == 2 && user != null) {
+        _pages[_tabIndex] = AddPost(); // Set a default screen if needed
+      } else {
+        _pages[_tabIndex] = HomeScreen();
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _pages[_tabIndex], // Use _pages instead of _tabs
+      body: _pages[_tabIndex],
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         selectedLabelStyle: TextStyle(fontSize: 14),
@@ -58,27 +159,14 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
         showSelectedLabels: true,
         showUnselectedLabels: true,
         currentIndex: _tabIndex,
-        onTap: (int index) {
-          setState(() {
-            _tabIndex = index;
-            if (_tabIndex == 1) {
-              // Inverter Market tab index in your BottomNavigationBar
-              _pages[_tabIndex] =
-                  PanelMarket(selectedCategory: widget.selectedCategory);
-            }
-            if (_tabIndex == 3) {
-              _pages[_tabIndex] =
-                  InverterMarket(selectedCategory: widget.selectedCategory);
-            }
-          });
-        },
+        onTap: _handleTabSelection,
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Image.asset(
               "assets/images/home.png",
               fit: BoxFit.cover,
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
             ),
             label: 'HOME',
           ),
@@ -86,15 +174,15 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             icon: Image.asset(
               "assets/images/solar-panel.png",
               fit: BoxFit.cover,
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
             ),
             label: 'Panels',
           ),
           BottomNavigationBarItem(
             icon: Container(
-                width: 45,
-                height: 45,
+                width: 40,
+                height: 40,
                 decoration: BoxDecoration(
                   color: Color(0xff18be88),
                   borderRadius: BorderRadius.circular(60),
@@ -112,8 +200,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             icon: Image.asset(
               "assets/images/solar-inverter.png",
               fit: BoxFit.cover,
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
             ),
             label: 'Inverters',
           ),
@@ -121,8 +209,8 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
             icon: Image.asset(
               "assets/images/settings.png",
               fit: BoxFit.cover,
-              width: 30,
-              height: 30,
+              width: 25,
+              height: 25,
             ),
             label: 'Setting',
           ),

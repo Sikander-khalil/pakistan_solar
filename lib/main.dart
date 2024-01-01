@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 import 'package:pakistan_solar_market/screens/login_screen.dart';
 
+
+
 bool isUnavailable = false;
 
 void main() async {
@@ -54,9 +56,11 @@ class _MyAppState extends State<MyApp> {
         ),
         home: BottomNavScreen(
           initialIndex: 0,
-        ));
+        ),
 
 
 
+
+    );
   }
 }
