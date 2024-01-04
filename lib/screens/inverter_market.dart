@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,10 +12,9 @@ import 'package:pakistan_solar_market/constant/colors.dart';
 import 'register_screen.dart';
 
 class InverterMarket extends StatefulWidget {
+  final String? selectedCategory;
 
- final String? selectedCategory;
-
-   InverterMarket({super.key, this.selectedCategory});
+  InverterMarket({super.key, this.selectedCategory});
 
   @override
   State<InverterMarket> createState() => _InverterMarketState();
@@ -64,6 +64,7 @@ class _InverterMarketState extends State<InverterMarket>
   List<Map<String, dynamic>> userData2 = [];
   List<Map<String, dynamic>> userData3 = [];
   List<Map<String, dynamic>> userData4 = [];
+  List<Map<String, dynamic>> userData5 = [];
 
   void fetchDataForHomeScreen() async {
     try {
@@ -361,6 +362,80 @@ class _InverterMarketState extends State<InverterMarket>
     }
   }
 
+  void fetchDataForHomeScreen5() async {
+    try {
+      DatabaseEvent snapshot = await _userRef2.once();
+
+      if (snapshot.snapshot.value != null) {
+        Map<dynamic, dynamic>? usersData =
+            snapshot.snapshot.value as Map<dynamic, dynamic>?;
+
+        if (usersData != null) {
+          List<Map<String, dynamic>> fetchedData = [];
+
+          usersData.forEach((key, value) {
+            if (value['TESLA'] != null &&
+                value['TESLA'] is Map<dynamic, dynamic>) {
+              String fullName = value['fullName'] ?? '';
+              String phone = value['phone'] ?? '';
+              String image = value['image'] ?? '';
+              (value['TESLA'] as Map<dynamic, dynamic>)
+                  .forEach((canKey, canValue) {
+                if (canValue is Map<dynamic, dynamic>) {
+                  Map<String, dynamic> canData = {
+                    'fullName': fullName,
+                    'phone': phone,
+                    'image': image,
+                    'Available': canValue['Available'] ?? '',
+                    'Location': canValue['Location'] ?? '',
+                    'Number': canValue['Number'] ?? '',
+                    'Price': canValue['Price'] ?? '',
+                    'Size': canValue['Size'] ?? '',
+                    'SubCategories': canValue['SubCategories'] ?? '',
+                    'Type': canValue['Type'] ?? '',
+                  };
+                  fetchedData.add(canData);
+                }
+              });
+            }
+          });
+
+          // Sort the fetchedData based on 'Price' field
+          // Sort the fetchedData based on 'Price' field
+          fetchedData.sort((a, b) {
+            var priceA = double.tryParse(a['Price'] ?? '0');
+            var priceB = double.tryParse(b['Price'] ?? '0');
+
+            // Check if prices are equal to 45.0
+            bool isPriceAEqualTo45 = (priceA != null && priceA == 45.0);
+            bool isPriceBEqualTo45 = (priceB != null && priceB == 45.0);
+
+            if (isPriceAEqualTo45 && !isPriceBEqualTo45) {
+              return -1; // Put 'Price' equal to 45.0 above others
+            } else if (!isPriceAEqualTo45 && isPriceBEqualTo45) {
+              return 1; // Put 'Price' equal to 45.0 above others
+            } else if (priceA != null && priceB != null) {
+              // Compare prices that are not equal to 45.0
+              if (!isPriceAEqualTo45 && !isPriceBEqualTo45) {
+                return priceA.compareTo(priceB);
+              }
+            }
+
+            // If parsing fails or prices are equal (including 45.0),
+            // maintain the current order
+            return 0;
+          });
+
+          setState(() {
+            userData5 = fetchedData;
+          });
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   Size? screenSize;
   double? screenHeight;
   double? screenWidth;
@@ -389,38 +464,41 @@ class _InverterMarketState extends State<InverterMarket>
     fetchDataForHomeScreen2();
     fetchDataForHomeScreen3();
     fetchDataForHomeScreen4();
+    fetchDataForHomeScreen5();
 
     updateTime();
     getMarketRate();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 5, vsync: this);
 
     // Listen to changes on _tabController to set the initial index
     _tabController.addListener(_handleTabSelection);
 
     // Check if selectedCategory has a value and set the initial index accordingly
     if (widget.selectedCategory != null) {
-
       _setInitialIndex(widget.selectedCategory!);
     }
   }
-
 
   void _handleTabSelection() {
     if (_tabController.indexIsChanging) {
       // Tab index is changing, handle the selection change
       switch (_tabController.index) {
         case 0:
-        // Logic or actions when the 'Longi' tab is selected
+          // Logic or actions when the 'Longi' tab is selected
           break;
         case 1:
-        // Logic or actions when the 'Jinko' tab is selected
+          // Logic or actions when the 'Jinko' tab is selected
           break;
         case 2:
-        // Logic or actions when the 'JA' tab is selected
+          // Logic or actions when the 'JA' tab is selected
           break;
         case 3:
-        // Logic or actions when the 'Canadian' tab is selected
+          // Logic or actions when the 'Canadian' tab is selected
           break;
+        case 4:
+          // Logic or actions when the 'Canadian' tab is selected
+          break;
+
         default:
           break;
       }
@@ -443,11 +521,16 @@ class _InverterMarketState extends State<InverterMarket>
       case "SOLIS":
         _tabController.index = 3;
         break;
+      case "TESLA":
+        _tabController.index = 4;
+        break;
+
       default:
         _tabController.index = 0; // Default tab
         break;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     screenSize = MediaQuery.of(context).size;
@@ -534,10 +617,20 @@ class _InverterMarketState extends State<InverterMarket>
               labelColor: Colors.black,
               dividerColor: Colors.grey,
               tabs: [
-                Tab(text: 'GROWATT'),
-                Tab(text: 'KNOX'),
-                Tab(text: 'LEVOLTEC'),
-                Tab(text: 'SOLIS'),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Tab(text: 'GROWATT')),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal, child: Tab(text: 'KNOX')),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Tab(text: 'LEVOLTEC')),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Tab(text: 'SOLIS')),
+                SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Tab(text: 'TESLA')),
               ],
               controller: _tabController,
             ),
@@ -548,7 +641,8 @@ class _InverterMarketState extends State<InverterMarket>
                 buildCategoryList(userData, context),
                 buildCategoryList2(userData2, context),
                 buildCategoryList3(userData3, context),
-                buildCategoryList4(userData4, context)
+                buildCategoryList4(userData4, context),
+                buildCategoryList5(userData5, context),
               ],
             ))
           ],
@@ -573,11 +667,11 @@ class _InverterMarketState extends State<InverterMarket>
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> longiData = categories[index];
+                    Map<String, dynamic> growatt = categories[index];
 
                     return InkWell(
                       onTap: () {
-                        dialogeBox(context, longiData["phone"]);
+                        dialogeBox(context, growatt["phone"]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -609,9 +703,18 @@ class _InverterMarketState extends State<InverterMarket>
                                                   .circle, // Define the container shape as a circle
                                             ),
                                             child: ClipOval(
-                                              child: Image.network(
-                                                longiData['image'],
-                                                fit: BoxFit.cover,
+                                              child: CachedNetworkImage(
+                                                imageUrl: growatt['image'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -619,11 +722,11 @@ class _InverterMarketState extends State<InverterMarket>
                                       ),
                                       SizedBox(height: screenHeight * 0.01),
                                       Text(
-                                        longiData['fullName'] ??
-                                            longiData['fullName'],
+                                        growatt['fullName'] ??
+                                            growatt['fullName'],
                                         style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                          fontSize: screenHeight * 0.017,
                                         ),
                                       ),
                                     ],
@@ -634,7 +737,7 @@ class _InverterMarketState extends State<InverterMarket>
                                   child: Column(
                                     children: [
                                       Text(
-                                        longiData['SubCategories'],
+                                        growatt['SubCategories'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15,
@@ -644,14 +747,14 @@ class _InverterMarketState extends State<InverterMarket>
                                         height: 6,
                                       ),
                                       Text(
-                                        longiData['Location'] ?? 'NA',
+                                        growatt['Location'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
                                         ),
                                       ),
                                       Text(
-                                        longiData['Type'] ?? 'N/A',
+                                        growatt['Type'] ?? 'N/A',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
@@ -661,22 +764,23 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: longiData['Number'].length < 3
-                                      ? EdgeInsets.only(right: 20)
-                                      : EdgeInsets.only(right: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height: 20,
+                                        height: 15,
                                       ),
                                       Text(
-                                        "  ${longiData['Number']} ${longiData['Size'] ?? 'NA'}",
+                                        "  ${growatt['Number']} ${growatt['Size'] ?? 'NA'}",
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Text(
-                                        longiData['Available'] ?? 'NA',
+                                        growatt['Available'] ?? 'NA',
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
@@ -685,7 +789,9 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 8, right: 10),
+                                  padding: growatt['Price'].length > 4
+                                      ? EdgeInsets.only(top: 8, right: 50)
+                                      : EdgeInsets.only(top: 8, left: 10),
                                   child: Column(
                                     children: [
                                       Text(
@@ -697,11 +803,13 @@ class _InverterMarketState extends State<InverterMarket>
                                         ),
                                       ),
                                       Text(
-                                        longiData['Price'] ?? 'NA',
+                                        growatt['Price'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: growatt['Price'].length > 4
+                                              ? 16
+                                              : 16,
                                         ),
                                       )
                                     ],
@@ -741,11 +849,11 @@ class _InverterMarketState extends State<InverterMarket>
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> jinkoData = categories[index];
+                    Map<String, dynamic> kNOX = categories[index];
 
                     return InkWell(
                       onTap: () {
-                        dialogeBox(context, jinkoData["phone"]);
+                        dialogeBox(context, kNOX["phone"]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -777,9 +885,18 @@ class _InverterMarketState extends State<InverterMarket>
                                                   .circle, // Define the container shape as a circle
                                             ),
                                             child: ClipOval(
-                                              child: Image.network(
-                                                jinkoData['image'],
-                                                fit: BoxFit.cover,
+                                              child: CachedNetworkImage(
+                                                imageUrl: kNOX['image'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -787,10 +904,10 @@ class _InverterMarketState extends State<InverterMarket>
                                       ),
                                       SizedBox(height: screenHeight * 0.01),
                                       Text(
-                                        jinkoData['fullName'],
+                                        kNOX['fullName'] ?? kNOX['fullName'],
                                         style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                          fontSize: screenHeight * 0.017,
                                         ),
                                       ),
                                     ],
@@ -801,7 +918,7 @@ class _InverterMarketState extends State<InverterMarket>
                                   child: Column(
                                     children: [
                                       Text(
-                                        jinkoData['SubCategories'],
+                                        kNOX['SubCategories'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15,
@@ -811,14 +928,14 @@ class _InverterMarketState extends State<InverterMarket>
                                         height: 6,
                                       ),
                                       Text(
-                                        jinkoData['Location'] ?? 'NA',
+                                        kNOX['Location'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
                                         ),
                                       ),
                                       Text(
-                                        jinkoData['Type'] ?? 'N/A',
+                                        kNOX['Type'] ?? 'N/A',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
@@ -828,20 +945,23 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height: 20,
+                                        height: 15,
                                       ),
                                       Text(
-                                        "  ${jinkoData['Number']} ${jinkoData['Size'] ?? 'NA'}",
+                                        "  ${kNOX['Number']} ${kNOX['Size'] ?? 'NA'}",
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Text(
-                                        jinkoData['Available'] ?? 'NA',
+                                        kNOX['Available'] ?? 'NA',
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
@@ -850,7 +970,9 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 8, left: 20),
+                                  padding: kNOX['Price'].length > 4
+                                      ? EdgeInsets.only(top: 8, right: 50)
+                                      : EdgeInsets.only(top: 8, left: 10),
                                   child: Column(
                                     children: [
                                       Text(
@@ -862,11 +984,13 @@ class _InverterMarketState extends State<InverterMarket>
                                         ),
                                       ),
                                       Text(
-                                        jinkoData['Price'] ?? 'NA',
+                                        kNOX['Price'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: kNOX['Price'].length > 4
+                                              ? 16
+                                              : 16,
                                         ),
                                       )
                                     ],
@@ -906,11 +1030,11 @@ class _InverterMarketState extends State<InverterMarket>
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> JaData = categories[index];
+                    Map<String, dynamic> lEVOLTEC = categories[index];
 
                     return InkWell(
                       onTap: () {
-                        dialogeBox(context, JaData["phone"]);
+                        dialogeBox(context, lEVOLTEC["phone"]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -942,9 +1066,18 @@ class _InverterMarketState extends State<InverterMarket>
                                                   .circle, // Define the container shape as a circle
                                             ),
                                             child: ClipOval(
-                                              child: Image.network(
-                                                JaData['image'],
-                                                fit: BoxFit.cover,
+                                              child: CachedNetworkImage(
+                                                imageUrl: lEVOLTEC['image'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -952,45 +1085,39 @@ class _InverterMarketState extends State<InverterMarket>
                                       ),
                                       SizedBox(height: screenHeight * 0.01),
                                       Text(
-                                        JaData['fullName'],
+                                        lEVOLTEC['fullName'] ??
+                                            lEVOLTEC['fullName'],
                                         style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                          fontSize: screenHeight * 0.017,
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 30)
-                                      : EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.all(10.0),
                                   child: Column(
                                     children: [
                                       Text(
-                                        JaData['SubCategories'],
+                                        lEVOLTEC['SubCategories'],
                                         style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize:
-                                              JaData['SubCategories'].length <=
-                                                      10
-                                                  ? 18
-                                                  : 16,
+                                          fontSize: 15,
                                         ),
                                       ),
                                       SizedBox(
                                         height: 6,
                                       ),
                                       Text(
-                                        JaData['Location'] ?? 'NA',
+                                        lEVOLTEC['Location'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
                                         ),
                                       ),
                                       Text(
-                                        JaData['Type'] ?? 'N/A',
+                                        lEVOLTEC['Type'] ?? 'N/A',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
@@ -1000,22 +1127,23 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(left: 30)
-                                      : EdgeInsets.only(right: 20),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height: 20,
+                                        height: 15,
                                       ),
                                       Text(
-                                        "  ${JaData['Number']} ${JaData['Size'] ?? 'NA'}",
+                                        "  ${lEVOLTEC['Number']} ${lEVOLTEC['Size'] ?? 'NA'}",
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Text(
-                                        JaData['Available'] ?? 'NA',
+                                        lEVOLTEC['Available'] ?? 'NA',
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
@@ -1024,9 +1152,9 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(top: 8, left: 20)
-                                      : EdgeInsets.only(top: 8, right: 10),
+                                  padding: lEVOLTEC['Price'].length > 4
+                                      ? EdgeInsets.only(top: 8, right: 50)
+                                      : EdgeInsets.only(top: 8, left: 10),
                                   child: Column(
                                     children: [
                                       Text(
@@ -1038,11 +1166,13 @@ class _InverterMarketState extends State<InverterMarket>
                                         ),
                                       ),
                                       Text(
-                                        JaData['Price'] ?? 'NA',
+                                        lEVOLTEC['Price'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 18,
+                                          fontSize: lEVOLTEC['Price'].length > 4
+                                              ? 16
+                                              : 16,
                                         ),
                                       )
                                     ],
@@ -1082,11 +1212,11 @@ class _InverterMarketState extends State<InverterMarket>
                   physics: NeverScrollableScrollPhysics(),
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    Map<String, dynamic> CaData = categories[index];
+                    Map<String, dynamic> solis = categories[index];
 
                     return InkWell(
                       onTap: () {
-                        dialogeBox(context, CaData["phone"]);
+                        dialogeBox(context, solis["phone"]);
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
@@ -1118,9 +1248,18 @@ class _InverterMarketState extends State<InverterMarket>
                                                   .circle, // Define the container shape as a circle
                                             ),
                                             child: ClipOval(
-                                              child: Image.network(
-                                                CaData['image'],
-                                                fit: BoxFit.cover,
+                                              child: CachedNetworkImage(
+                                                imageUrl: solis['image'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -1128,10 +1267,10 @@ class _InverterMarketState extends State<InverterMarket>
                                       ),
                                       SizedBox(height: screenHeight * 0.01),
                                       Text(
-                                        CaData['fullName'],
+                                        solis['fullName'] ?? solis['fullName'],
                                         style: TextStyle(
                                           color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                          fontSize: screenHeight * 0.017,
                                         ),
                                       ),
                                     ],
@@ -1142,7 +1281,7 @@ class _InverterMarketState extends State<InverterMarket>
                                   child: Column(
                                     children: [
                                       Text(
-                                        CaData['SubCategories'],
+                                        solis['SubCategories'],
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 15,
@@ -1152,14 +1291,14 @@ class _InverterMarketState extends State<InverterMarket>
                                         height: 6,
                                       ),
                                       Text(
-                                        CaData['Location'] ?? 'NA',
+                                        solis['Location'] ?? 'NA',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
                                         ),
                                       ),
                                       Text(
-                                        CaData['Type'] ?? 'N/A',
+                                        solis['Type'] ?? 'N/A',
                                         style: TextStyle(
                                           color: Colors.black87,
                                           fontSize: 11,
@@ -1169,20 +1308,23 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(left: 10),
+                                  padding: EdgeInsets.only(right: 10),
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height: 20,
+                                        height: 15,
                                       ),
                                       Text(
-                                        "  ${CaData['Number']} ${CaData['Size'] ?? 'NA'}",
+                                        "  ${solis['Number']} ${solis['Size'] ?? 'NA'}",
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
                                       Text(
-                                        CaData['Available'] ?? 'NA',
+                                        solis['Available'] ?? 'NA',
                                         style: TextStyle(
                                             color: Colors.black87,
                                             fontSize: 12),
@@ -1191,7 +1333,9 @@ class _InverterMarketState extends State<InverterMarket>
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 8, left: 20),
+                                  padding: solis['Price'].length > 4
+                                      ? EdgeInsets.only(top: 8, right: 50)
+                                      : EdgeInsets.only(top: 8, left: 10),
                                   child: Column(
                                     children: [
                                       Text(
@@ -1203,11 +1347,194 @@ class _InverterMarketState extends State<InverterMarket>
                                         ),
                                       ),
                                       Text(
-                                        CaData['Price'] ?? 'NA',
+                                        solis['Price'] ?? 'NA',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: solis['Price'].length > 4
+                                              ? 16
+                                              : 16,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) => Divider(),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+              ],
+            ),
+          )
+        : Center(child: CircularProgressIndicator());
+  }
+
+  buildCategoryList5(List<dynamic> categories, BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    double screenHeight = screenSize.height;
+    double screenWidth = screenSize.width;
+    return categories.isNotEmpty
+        ? SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 20,
+                ),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    Map<String, dynamic> tesla = categories[index];
+
+                    return InkWell(
+                      onTap: () {
+                        dialogeBox(context, tesla["phone"]);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          width: double.infinity,
+                          height: screenHeight * 0.12,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            border: Border.all(width: 2),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(screenWidth * 0.020),
+                                  child: Column(
+                                    children: [
+                                      Stack(
+                                        alignment: Alignment.bottomRight,
+                                        children: [
+                                          Container(
+                                            width: screenWidth * 0.11,
+                                            height: screenWidth * 0.11,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape
+                                                  .circle, // Define the container shape as a circle
+                                            ),
+                                            child: ClipOval(
+                                              child: CachedNetworkImage(
+                                                imageUrl: tesla['image'],
+                                                progressIndicatorBuilder:
+                                                    (context, url,
+                                                            downloadProgress) =>
+                                                        CircularProgressIndicator(
+                                                            value:
+                                                                downloadProgress
+                                                                    .progress),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: screenHeight * 0.01),
+                                      Text(
+                                        tesla['fullName'] ?? tesla['fullName'],
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: screenHeight * 0.017,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        tesla['SubCategories'],
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 15,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 6,
+                                      ),
+                                      Text(
+                                        tesla['Location'] ?? 'NA',
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                      Text(
+                                        tesla['Type'] ?? 'N/A',
+                                        style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(right: 10),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        height: 15,
+                                      ),
+                                      Text(
+                                        "  ${tesla['Number']} ${tesla['Size'] ?? 'NA'}",
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 12),
+                                      ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Text(
+                                        tesla['Available'] ?? 'NA',
+                                        style: TextStyle(
+                                            color: Colors.black87,
+                                            fontSize: 12),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Padding(
+                                  padding: tesla['Price'].length > 4
+                                      ? EdgeInsets.only(top: 8, right: 50)
+                                      : EdgeInsets.only(top: 8, left: 10),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        "RS",
                                         style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
+                                        ),
+                                      ),
+                                      Text(
+                                        tesla['Price'] ?? 'NA',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: tesla['Price'].length > 4
+                                              ? 16
+                                              : 16,
                                         ),
                                       )
                                     ],

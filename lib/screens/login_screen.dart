@@ -11,6 +11,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:pakistan_solar_market/constant/colors.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
+
 import 'package:pakistan_solar_market/screens/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -47,8 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
       } else {
         Fluttertoast.showToast(
             msg: 'Phone Number does not exists, Please Register');
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => RegisterScreen()));
       }
     } catch (e) {
       print('Error during sign up: $e');
@@ -171,7 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 50),
+                  padding: const EdgeInsets.only(bottom: 70),
                   child: Text(
                     "Login",
                     style: TextStyle(
@@ -182,7 +181,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 50),
+                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 30),
                   child: Container(
                     height: 55,
                     child: TextFormField(
@@ -203,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 40),
+                      const EdgeInsets.only(left: 15.0, right: 15, bottom: 30),
                   child: Container(
                     height: 55,
                     child: TextFormField(
@@ -238,21 +237,24 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(
                       color: black, fontWeight: FontWeight.bold, fontSize: 25),
                 ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => RegisterScreen()));
-                    },
-                    child: Text(
-                      "Register",
-                      style: TextStyle(
-                        color: primaryColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ))
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 40),
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => RegisterScreen()));
+                      },
+                      child: Text(
+                        "Register",
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )),
+                )
               ],
             ),
           ),

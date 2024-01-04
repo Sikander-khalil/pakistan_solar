@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
@@ -598,7 +599,7 @@ class _PanelMarketState extends State<PanelMarket>
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           width: double.infinity,
-                          height: screenHeight * 0.12,
+                          height: screenHeight * 0.17,
                           decoration: BoxDecoration(
                             color: Colors.white,
                             border: Border.all(width: 2),
@@ -624,9 +625,11 @@ class _PanelMarketState extends State<PanelMarket>
 
                                             ),
                                             child: ClipOval(
-                                              child: Image.network(
-                                                longiData['image'],
-                                                fit: BoxFit.cover,
+                                              child: CachedNetworkImage(
+                                                imageUrl:   longiData['image'],
+                                                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                                    CircularProgressIndicator(value: downloadProgress.progress),
+                                                errorWidget: (context, url, error) => Icon(Icons.error),
                                               ),
                                             ),
                                           ),
@@ -642,11 +645,20 @@ class _PanelMarketState extends State<PanelMarket>
                                           fontSize: screenHeight * 0.018,
                                         ),
                                       ),
+                                      SizedBox(height: 15,),
+                                      Container(
+                                        decoration: BoxDecoration(color: primaryColor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 15,right: 15),
+                                          child: Text("Call",style: TextStyle(color: white),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: const EdgeInsets.all(10.0),
+                                  padding: const EdgeInsets.only(right: 5,top: 10,bottom: 10),
                                   child: Column(
                                     children: [
                                       Text(
@@ -661,47 +673,90 @@ class _PanelMarketState extends State<PanelMarket>
                                       SizedBox(
                                         height: 6,
                                       ),
-                                      Text(
-                                        longiData['Location'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
+                                      Container(
+
+
+                                        decoration: BoxDecoration(color: Colors.blue),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 20, right: 20),
+                                          child: Text(
+                                            longiData['Location'] ?? 'NA',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                      Text(
-                                        longiData['Type'] ?? 'N/A',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
+                                      SizedBox(height: 10,),
+                                      Container(
+
+
+                                        decoration: BoxDecoration(color: Colors.blue),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 23,right: 23),
+                                          child: Text(
+                                            longiData['Type'] ?? 'N/A',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 11,
+                                            ),
+                                          ),
                                         ),
                                       ),
+                                      SizedBox(height: 10,),
+                                      Container(
+                                        margin: EdgeInsets.only(left: 30),
+                                        decoration: BoxDecoration(color: primaryColor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 15,right: 15),
+                                          child: Text("WhatsApp",style: TextStyle(color: white),
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: longiData['Number'].length < 3  ? EdgeInsets.only(right: 20) : EdgeInsets.only(right: 10),
+                                  padding: longiData['Number'].length < 3  ? EdgeInsets.only(right: 10) : EdgeInsets.only(right: 10),
                                   child: Column(
                                     children: [
                                       SizedBox(
-                                        height: 20,
+                                        height: 35,
                                       ),
-                                      Text(
-                                        "  ${longiData['Number']} ${longiData['Size'] ?? 'NA'}",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
+                                      Container(
+                                        decoration: BoxDecoration(color: Colors.yellow),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 0, right: 10),
+                                          child: Text(
+                                            "  ${longiData['Number']} ${longiData['Size'] ?? 'NA'}",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12),
+                                          ),
+                                        ),
                                       ),
-                                      Text(
-                                        longiData['Available'] ?? 'NA',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
+                                      SizedBox(
+                                        height: 10,
                                       ),
+                                      Container(
+                                        decoration: BoxDecoration(color: Colors.yellow),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(left: 0, right: 10),
+                                          child: Text(
+                                            longiData['Available'] ?? 'NA',
+                                            style: TextStyle(
+                                                color: Colors.black87,
+                                                fontSize: 12),
+                                          ),
+                                        ),
+                                      ),
+
                                     ],
                                   ),
                                 ),
                                 Padding(
-                                  padding: EdgeInsets.only(top: 8, right: 10),
+                                  padding: EdgeInsets.only(top: 8, right: 50),
                                   child: Column(
                                     children: [
                                       Text(
@@ -719,10 +774,20 @@ class _PanelMarketState extends State<PanelMarket>
                                           fontWeight: FontWeight.bold,
                                           fontSize: 18,
                                         ),
-                                      )
+                                      ),
+                                     SizedBox(height: 30,),
+                                     Container(
+                                       decoration: BoxDecoration(color: primaryColor),
+                                       child: Padding(
+                                         padding: const EdgeInsets.only(left: 15,right: 15),
+                                         child: Text("BID",style: TextStyle(color: white),
+                                          ),
+                                       ),
+                                     )
                                     ],
                                   ),
-                                )
+                                ),
+
                               ],
                             ),
                           ),
@@ -747,164 +812,230 @@ class _PanelMarketState extends State<PanelMarket>
     double screenWidth = screenSize.width;
     return categories.isNotEmpty
         ? SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> jinkoData = categories[index];
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              Map<String, dynamic> jinkoData = categories[index];
 
-                    return InkWell(
-                      onTap: () {
-                        dialogeBox(context, jinkoData["phone"]);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: screenHeight * 0.12,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              return InkWell(
+                onTap: () {
+                  dialogeBox(context, jinkoData["phone"]);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: screenHeight * 0.17,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.020),
+                            child: Column(
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.all(screenWidth * 0.020),
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          Container(
-                                            width: screenWidth * 0.11,
-                                            height: screenWidth * 0.11,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle, // Define the container shape as a circle
+                                Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    Container(
+                                      width: screenWidth * 0.11,
+                                      height: screenWidth * 0.11,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle, // Define the container shape as a circle
 
-                                            ),
-                                            child: ClipOval(
-                                              child: Image.network(
-                                                jinkoData['image'],
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
-                                      Text(
-                                        jinkoData['fullName'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:   jinkoData['image'],
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              CircularProgressIndicator(value: downloadProgress.progress),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
                                         ),
                                       ),
-                                    ],
+                                    ),
+
+                                  ],
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
+                                Text(
+                                  jinkoData['fullName'] ??
+                                      jinkoData['fullName'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenHeight * 0.018,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        jinkoData['SubCategories'].length > 8
-                                            ? '${jinkoData['SubCategories'].substring(0, 16)}..'
-                                            : jinkoData['SubCategories'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 6,
-                                      ),
-                                      Text(
-                                        jinkoData['Location'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Text(
-                                        jinkoData['Type'] ?? 'N/A',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(right: 20),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        "  ${jinkoData['Number']} ${jinkoData['Size'] ?? 'NA'}",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                      Text(
-                                        jinkoData['Available'] ?? 'NA',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8, right: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "RS",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        jinkoData['Price'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      )
-                                    ],
+                                SizedBox(height: 15,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("Call",style: TextStyle(color: white),
+                                    ),
                                   ),
                                 )
                               ],
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5,top: 10,bottom: 10),
+                            child: Column(
+                              children: [
+                                Text(
+                                  jinkoData['SubCategories'].length > 8
+                                      ? '${jinkoData['SubCategories'].substring(0, 15)}...'
+                                      : jinkoData['SubCategories'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20, right: 20),
+                                    child: Text(
+                                      jinkoData['Location'] ?? 'NA',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 23,right: 23),
+                                    child: Text(
+                                      jinkoData['Type'] ?? 'N/A',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+                                  margin: EdgeInsets.only(left: 30),
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("WhatsApp",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: jinkoData['Number'].length < 3  ? EdgeInsets.only(right: 10) : EdgeInsets.only(right: 10),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 35,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      "  ${jinkoData['Number']} ${jinkoData['Size'] ?? 'NA'}",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      jinkoData['Available'] ?? 'NA',
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8, right: 50),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "RS",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  jinkoData['Price'] ?? 'NA',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("BID",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                        ],
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(),
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          )
+              );
+            },
+            separatorBuilder: (context, index) => Divider(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    )
         : Center(child: CircularProgressIndicator());
   }
 
@@ -914,175 +1045,230 @@ class _PanelMarketState extends State<PanelMarket>
     double screenWidth = screenSize.width;
     return categories.isNotEmpty
         ? SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> JaData = categories[index];
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              Map<String, dynamic> JaData = categories[index];
 
-                    return InkWell(
-                      onTap: () {
-                        dialogeBox(context, JaData["phone"]);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: screenHeight * 0.12,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              return InkWell(
+                onTap: () {
+                  dialogeBox(context, JaData["phone"]);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: screenHeight * 0.17,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.020),
+                            child: Column(
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.all(screenWidth * 0.020),
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          Container(
-                                            width: screenWidth * 0.11,
-                                            height: screenWidth * 0.11,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle, // Define the container shape as a circle
+                                Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    Container(
+                                      width: screenWidth * 0.11,
+                                      height: screenWidth * 0.11,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle, // Define the container shape as a circle
 
-                                            ),
-                                            child: ClipOval(
-                                              child: Image.network(
-                                                JaData['image'],
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
-                                      Text(
-                                        JaData['fullName'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:   JaData['image'],
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              CircularProgressIndicator(value: downloadProgress.progress),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
                                         ),
                                       ),
-                                    ],
+                                    ),
+
+                                  ],
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
+                                Text(
+                                  JaData['fullName'] ??
+                                      JaData['fullName'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenHeight * 0.018,
                                   ),
                                 ),
-                                Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(
-                                          top: 10, bottom: 10, left: 30)
-                                      : EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        JaData['SubCategories'].length > 8
-                                            ? '${JaData['SubCategories'].substring(0, 16)}..'
-                                            : JaData['SubCategories'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize:
-                                              JaData['SubCategories'].length <=
-                                                      10
-                                                  ? 18
-                                                  : 16,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 6,
-                                      ),
-                                      Text(
-                                        JaData['Location'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Text(
-                                        JaData['Type'] ?? 'N/A',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(left: 30)
-                                      : EdgeInsets.only(right: 20),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        "  ${JaData['Number']} ${JaData['Size'] ?? 'NA'}",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                      Text(
-                                        JaData['Available'] ?? 'NA',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: JaData['SubCategories'].length <= 10
-                                      ? EdgeInsets.only(top: 8, left: 20)
-                                      : EdgeInsets.only(top: 8, right: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "RS",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        JaData['Price'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      )
-                                    ],
+                                SizedBox(height: 15,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("Call",style: TextStyle(color: white),
+                                    ),
                                   ),
                                 )
                               ],
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5,top: 10,bottom: 10),
+                            child: Column(
+                              children: [
+                                Text(
+                                  JaData['SubCategories'].length > 8
+                                      ? '${JaData['SubCategories'].substring(0, 15)}...'
+                                      : JaData['SubCategories'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20, right: 20),
+                                    child: Text(
+                                      JaData['Location'] ?? 'NA',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 23,right: 23),
+                                    child: Text(
+                                      JaData['Type'] ?? 'N/A',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+                                  margin: EdgeInsets.only(left: 30),
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("WhatsApp",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: JaData['Number'].length < 3  ? EdgeInsets.only(right: 10) : EdgeInsets.only(right: 10),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 35,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      "  ${JaData['Number']} ${JaData['Size'] ?? 'NA'}",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      JaData['Available'] ?? 'NA',
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8, right: 50),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "RS",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  JaData['Price'] ?? 'NA',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("BID",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                        ],
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(),
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          )
+              );
+            },
+            separatorBuilder: (context, index) => Divider(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    )
         : Center(child: CircularProgressIndicator());
   }
 
@@ -1092,164 +1278,230 @@ class _PanelMarketState extends State<PanelMarket>
     double screenWidth = screenSize.width;
     return categories.isNotEmpty
         ? SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    Map<String, dynamic> CaData = categories[index];
+      child: Column(
+        children: [
+          SizedBox(
+            height: 20,
+          ),
+          ListView.separated(
+            shrinkWrap: true,
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              Map<String, dynamic> CaData = categories[index];
 
-                    return InkWell(
-                      onTap: () {
-                        dialogeBox(context, CaData["phone"]);
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          width: double.infinity,
-                          height: screenHeight * 0.12,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            border: Border.all(width: 2),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              return InkWell(
+                onTap: () {
+                  dialogeBox(context, CaData["phone"]);
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: screenHeight * 0.17,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(width: 2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.all(screenWidth * 0.020),
+                            child: Column(
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.all(screenWidth * 0.020),
-                                  child: Column(
-                                    children: [
-                                      Stack(
-                                        alignment: Alignment.bottomRight,
-                                        children: [
-                                          Container(
-                                            width: screenWidth * 0.11,
-                                            height: screenWidth * 0.11,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle, // Define the container shape as a circle
+                                Stack(
+                                  alignment: Alignment.bottomRight,
+                                  children: [
+                                    Container(
+                                      width: screenWidth * 0.11,
+                                      height: screenWidth * 0.11,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle, // Define the container shape as a circle
 
-                                            ),
-                                            child: ClipOval(
-                                              child: Image.network(
-                                                CaData['image'],
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
                                       ),
-                                      SizedBox(height: screenHeight * 0.01),
-                                      Text(
-                                        CaData['fullName'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: screenHeight * 0.018,
+                                      child: ClipOval(
+                                        child: CachedNetworkImage(
+                                          imageUrl:   CaData['image'],
+                                          progressIndicatorBuilder: (context, url, downloadProgress) =>
+                                              CircularProgressIndicator(value: downloadProgress.progress),
+                                          errorWidget: (context, url, error) => Icon(Icons.error),
                                         ),
                                       ),
-                                    ],
+                                    ),
+
+                                  ],
+                                ),
+                                SizedBox(height: screenHeight * 0.01),
+                                Text(
+                                  CaData['fullName'] ??
+                                      CaData['fullName'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: screenHeight * 0.018,
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        CaData['SubCategories'].length > 8
-                                            ? '${CaData['SubCategories'].substring(0, 16)}..'
-                                            : CaData['SubCategories'],
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 6,
-                                      ),
-                                      Text(
-                                        CaData['Location'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                      Text(
-                                        CaData['Type'] ?? 'N/A',
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontSize: 11,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(right: 15),
-                                  child: Column(
-                                    children: [
-                                      SizedBox(
-                                        height: 20,
-                                      ),
-                                      Text(
-                                        "  ${CaData['Number']} ${CaData['Size'] ?? 'NA'}",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                      Text(
-                                        CaData['Available'] ?? 'NA',
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 12),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 8, right: 10),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        "RS",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      ),
-                                      Text(
-                                        CaData['Price'] ?? 'NA',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18,
-                                        ),
-                                      )
-                                    ],
+                                SizedBox(height: 15,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("Call",style: TextStyle(color: white),
+                                    ),
                                   ),
                                 )
                               ],
                             ),
                           ),
-                        ),
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5,top: 10,bottom: 10),
+                            child: Column(
+                              children: [
+                                Text(
+                                  CaData['SubCategories'].length > 8
+                                      ? '${CaData['SubCategories'].substring(0, 15)}...'
+                                      : CaData['SubCategories'],
+                                  style: TextStyle(
+                                    color: Colors.black87,
+                                    fontSize: 15,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 6,
+                                ),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 20, right: 20),
+                                    child: Text(
+                                      CaData['Location'] ?? 'NA',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+
+
+                                  decoration: BoxDecoration(color: Colors.blue),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 23,right: 23),
+                                    child: Text(
+                                      CaData['Type'] ?? 'N/A',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 10,),
+                                Container(
+                                  margin: EdgeInsets.only(left: 30),
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("WhatsApp",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: CaData['Number'].length < 3  ? EdgeInsets.only(right: 10) : EdgeInsets.only(right: 10),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 35,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      "  ${CaData['Number']} ${CaData['Size'] ?? 'NA'}",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(color: Colors.yellow),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: Text(
+                                      CaData['Available'] ?? 'NA',
+                                      style: TextStyle(
+                                          color: Colors.black87,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                                ),
+
+                              ],
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(top: 8, right: 50),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "RS",
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                Text(
+                                  CaData['Price'] ?? 'NA',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                  ),
+                                ),
+                                SizedBox(height: 30,),
+                                Container(
+                                  decoration: BoxDecoration(color: primaryColor),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(left: 15,right: 15),
+                                    child: Text("BID",style: TextStyle(color: white),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+
+                        ],
                       ),
-                    );
-                  },
-                  separatorBuilder: (context, index) => Divider(),
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  height: 20,
-                ),
-              ],
-            ),
-          )
+              );
+            },
+            separatorBuilder: (context, index) => Divider(),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+        ],
+      ),
+    )
         : Center(child: CircularProgressIndicator());
   }
 

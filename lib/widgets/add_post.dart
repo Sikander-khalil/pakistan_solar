@@ -42,6 +42,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
     'SOLIS': ['5KW', '10KW', '15KW'],
     'LEVOLTEC': ['6KW'],
     'KNOX': ['6KW'],
+    'TESLA': ['6KW'],
+
   };
 
   User? user = FirebaseAuth.instance.currentUser;
@@ -159,8 +161,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                   labelColor: Colors.black,
                   dividerColor: Colors.grey,
                   tabs: [
-                    Tab(text: 'Panel Market'),
-                    Tab(text: 'Inverter Market'),
+                    Tab(text: 'Add Panel'),
+                    Tab(text: 'Add Inverter'),
                   ],
                   controller: _tabController,
                 ),
@@ -192,16 +194,18 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "TYPE",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
               height: 5,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.only(left: 30, right: 20),
               child: Container(
                 height: 60,
+                width: 290,
                 child: DropdownButtonFormField<String>(
                   items: _type.map((String category) {
                     return DropdownMenuItem<String>(
@@ -236,7 +240,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "NAME",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -247,7 +252,7 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
                   child: Container(
-                    width: 280,
+                    width: 290,
                     height: 55,
                     child: Stack(
                       alignment: Alignment.centerLeft,
@@ -275,11 +280,11 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                                 setState(() {
                                   _noselected =
                                       newValue; // Update selected Subcategory
-                                  _selectedValue =
-                                      _DropdownValues[newValue] != null &&
-                                              _DropdownValues[newValue]!.isNotEmpty
-                                          ? _DropdownValues[newValue]![0]
-                                          : '';
+                                  _selectedValue = _DropdownValues[newValue] !=
+                                              null &&
+                                          _DropdownValues[newValue]!.isNotEmpty
+                                      ? _DropdownValues[newValue]![0]
+                                      : '';
                                 });
                               }
                             },
@@ -356,12 +361,15 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(
-                      'NUMBER',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'NUMBER',
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                      ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10,left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
@@ -369,8 +377,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                           controller: numberController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8))),
-                            hintText: ' Enter Number',
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            hintText: ' Enter No',
                           ),
                         ),
                       ),
@@ -384,7 +393,7 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                   child: ListTile(
                     title: Text(
                       'SIZE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -406,7 +415,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                               _selectedSize = newValue!;
                             });
                           },
-                          value: _selectedSize.isNotEmpty ? _selectedSize : null,
+                          value:
+                              _selectedSize.isNotEmpty ? _selectedSize : null,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
                             contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
@@ -428,20 +438,24 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(
-                      'PRICE IN RS',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'PRICE IN RS',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                      ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10, left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
                           controller: priceController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             hintText: 'Enter Price',
                           ),
                           validator: (value) {
@@ -466,7 +480,7 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                     title: Text(
                       'LOCATION',
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                          color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -512,7 +526,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "AVAILABILITY",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
               ),
             ),
             SizedBox(
@@ -525,7 +540,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                 child: TextFormField(
                   controller: availableController,
                   decoration: InputDecoration(
-                      hintText: "Enter Availality", border: OutlineInputBorder()),
+                      hintText: "Enter Availality",
+                      border: OutlineInputBorder()),
                 ),
               ),
             ),
@@ -568,9 +584,11 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
 
                           try {
                             progressDialog.show();
-                            String id =
-                                DateTime.now().millisecondsSinceEpoch.toString();
-                            String subCatValue = '$_noselected | $_selectedValue';
+                            String id = DateTime.now()
+                                .millisecondsSinceEpoch
+                                .toString();
+                            String subCatValue =
+                                '$_noselected | $_selectedValue';
                             String homeCatValue = _noselected;
 
                             if (_noselected.contains('Longi')) {
@@ -626,7 +644,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                               progressDialog.dismiss();
                               Fluttertoast.showToast(msg: 'Success');
                             } else {
-                              Fluttertoast.showToast(msg: 'Invalid subcategory');
+                              Fluttertoast.showToast(
+                                  msg: 'Invalid subcategory');
                             }
                           } catch (e) {
                             print(e.toString());
@@ -662,16 +681,18 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "TYPE",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
               height: 5,
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
+              padding: const EdgeInsets.only(left: 30, right: 20),
               child: Container(
                 height: 60,
+                width: 300,
                 child: DropdownButtonFormField<String>(
                   items: _invertertype.map((String invertercategory) {
                     return DropdownMenuItem<String>(
@@ -708,7 +729,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "NAME",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -719,14 +741,15 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                 Padding(
                   padding: const EdgeInsets.only(left: 30),
                   child: Container(
-                    width: 280,
+                    width: 290,
                     height: 55,
                     child: Stack(
                       alignment: Alignment.centerLeft,
                       children: [
                         TextFormField(
                           controller: TextEditingController(
-                            text: '$_inverternoselected | $_inverterselectedValue',
+                            text:
+                                '$_inverternoselected | $_inverterselectedValue',
                           ),
                           decoration: InputDecoration(
                             border: OutlineInputBorder(),
@@ -748,15 +771,18 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                                   _inverternoselected =
                                       newValue; // Update selected Subcategory
                                   _inverterselectedValue =
-                                      _inverterDropdownValues[newValue] != null &&
+                                      _inverterDropdownValues[newValue] !=
+                                                  null &&
                                               _inverterDropdownValues[newValue]!
                                                   .isNotEmpty
-                                          ? _inverterDropdownValues[newValue]![0]
+                                          ? _inverterDropdownValues[newValue]![
+                                              0]
                                           : '';
                                 });
                               }
                             },
-                            items: _inverterDropdownValues.keys.map((String item) {
+                            items:
+                                _inverterDropdownValues.keys.map((String item) {
                               return DropdownMenuItem<String>(
                                 value: item,
                                 child: InkWell(
@@ -831,12 +857,15 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(
-                      'NUMBER',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'NUMBER',
+                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                      ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10,left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
@@ -844,8 +873,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                           controller: inverternumberController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8))),
-                            hintText: ' Enter Number',
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
+                            hintText: ' Enter No',
                           ),
                         ),
                       ),
@@ -859,7 +889,7 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                   child: ListTile(
                     title: Text(
                       'SIZE',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -905,20 +935,24 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               children: [
                 Expanded(
                   child: ListTile(
-                    title: Text(
-                      'PRICE IN RS',
-                      style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold),
+                    title: Padding(
+                      padding: const EdgeInsets.only(left: 10),
+                      child: Text(
+                        'PRICE IN RS',
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                      ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 10,left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
                           controller: inverterpriceController,
                           decoration: const InputDecoration(
                             border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(8))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8))),
                             hintText: 'Enter Price',
                           ),
                           validator: (value) {
@@ -950,7 +984,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       child: Container(
                         height: 60,
                         child: DropdownButtonFormField<String>(
-                          items: _inverterlocations.map((String invertercategory) {
+                          items:
+                              _inverterlocations.map((String invertercategory) {
                             return DropdownMenuItem<String>(
                               value: invertercategory,
                               child: Row(
@@ -989,7 +1024,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "AVAILABILITY",
-                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                style:
+                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               ),
             ),
             SizedBox(
@@ -1002,7 +1038,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                 child: TextFormField(
                   controller: inverteravailableController,
                   decoration: InputDecoration(
-                      hintText: "Enter Availality", border: OutlineInputBorder()),
+                      hintText: "Enter Availality",
+                      border: OutlineInputBorder()),
                 ),
               ),
             ),
@@ -1018,7 +1055,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       color: primaryColor,
                       // Inside the onPressed method of the MaterialButton
                       onPressed: () async {
-                        var inverternumber = inverternumberController.text.trim();
+                        var inverternumber =
+                            inverternumberController.text.trim();
                         var inverterprice = inverterpriceController.text.trim();
                         var inverteravailable =
                             inverteravailableController.text.trim();
@@ -1046,8 +1084,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
 
                           try {
                             progressDialog.show();
-                            String id =
-                                DateTime.now().millisecondsSinceEpoch.toString();
+                            String id = DateTime.now()
+                                .millisecondsSinceEpoch
+                                .toString();
                             String invertersubCatValue =
                                 '$_inverternoselected | $_inverterselectedValue';
                             String inverterhomeCatValue = _inverternoselected;
@@ -1056,10 +1095,13 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                               invertersubcategoryPrefix = 'GROWATT';
                             } else if (_inverternoselected.contains('SOLIS')) {
                               invertersubcategoryPrefix = 'SOLIS';
-                            } else if (_inverternoselected.contains('LEVOLTEC')) {
+                            } else if (_inverternoselected
+                                .contains('LEVOLTEC')) {
                               invertersubcategoryPrefix = 'LEVOLTEC';
                             } else if (_inverternoselected.contains('KNOX')) {
                               invertersubcategoryPrefix = 'KNOX';
+                            } else if (_inverternoselected.contains('TESLA')) {
+                              invertersubcategoryPrefix = 'TESLA';
                             }
 
                             if (invertersubcategoryPrefix.isNotEmpty) {
@@ -1106,7 +1148,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                               progressDialog.dismiss();
                               Fluttertoast.showToast(msg: 'Success');
                             } else {
-                              Fluttertoast.showToast(msg: 'Invalid subcategory');
+                              Fluttertoast.showToast(
+                                  msg: 'Invalid subcategory');
                             }
                           } catch (e) {
                             print(e.toString());

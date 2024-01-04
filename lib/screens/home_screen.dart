@@ -315,26 +315,84 @@ class _HomeScreenState extends State<HomeScreen>
     return timeUnit < 10 ? '0$timeUnit' : '$timeUnit';
   }
 
+
   void getData() {
-    _userRef2.once().then((DatabaseEvent snapshot) {
-      setState(() {
-        Map values = snapshot.snapshot.value as Map;
-        values.forEach((key, value) {
-          dataList.add(value); // DataList mein Firebase se mila data add karein
-        });
-      });
+    _userRef2.once().then((snapshot) {
+      if (snapshot != null && snapshot.snapshot.value != null) {
+        Map<dynamic, dynamic>? values = snapshot.snapshot.value as Map<dynamic, dynamic>?;
+
+        if (values != null) {
+          List<Map<dynamic, dynamic>> unsortedList = [];
+
+          values.forEach((key, value) {
+            if (value is Map<dynamic, dynamic>) {
+              unsortedList.add(value);
+            }
+          });
+
+          // Sort the list based on price (descending order)
+          unsortedList.sort((a, b) {
+            double priceA = double.tryParse(a['Price']?.toString() ?? '0') ?? 0;
+            double priceB = double.tryParse(b['Price']?.toString() ?? '0') ?? 0;
+
+            // Custom sorting logic
+            if (priceA >= 45.0 && priceB >= 45.0) {
+              return priceA.compareTo(priceB);
+            } else if (priceA <= 45.0 && priceB > 45.0) {
+              return -1; // 'a' goes above 'b'
+            } else if (priceA > 45.0 && priceB <= 45.0) {
+              return 1; // 'b' goes above 'a'
+            } else {
+              return priceB.compareTo(priceA); // Sort higher prices in descending order
+            }
+          });
+
+          setState(() {
+            dataList = unsortedList;
+          });
+        }
+      }
+    }).catchError((error) {
+      // Handle any potential errors that occurred during data retrieval
+      print("Error fetching data: $error");
+      // Add your error handling logic here
     });
   }
 
   void getData2() {
     _inverteruserRef2.once().then((DatabaseEvent snapshot) {
-      setState(() {
-        Map values = snapshot.snapshot.value as Map;
-        values.forEach((key, value) {
-          inverterdataList
-              .add(value); // DataList mein Firebase se mila data add karein
+      if (snapshot != null && snapshot.snapshot.value != null) {
+        setState(() {
+          Map values = snapshot.snapshot.value as Map;
+
+          if (values != null) {
+            List<Map> sortedList = [];
+
+            values.forEach((key, value) {
+              sortedList.add(value as Map);
+            });
+
+            // Sort the list based on price (descending order)
+            sortedList.sort((a, b) {
+              double priceA = double.tryParse(a['Price'] ?? '0') ?? 0;
+              double priceB = double.tryParse(b['Price'] ?? '0') ?? 0;
+
+              // Custom sorting logic
+              if (priceA >= 45.0 && priceB >= 45.0) {
+                return priceA.compareTo(priceB);
+              } else if (priceA <= 45.0 && priceB > 45.0) {
+                return -1; // 'a' goes above 'b'
+              } else if (priceA > 45.0 && priceB <= 45.0) {
+                return 1; // 'b' goes above 'a'
+              } else {
+                return priceB.compareTo(priceA); // Sort higher prices in descending order
+              }
+            });
+
+            inverterdataList = sortedList;
+          }
         });
-      });
+      }
     });
   }
 
@@ -646,6 +704,8 @@ class _HomeScreenState extends State<HomeScreen>
                             selectedCategory2 = 'LEVOLTEC';
                           } else if (tappedCategory2.contains('SOLIS')) {
                             selectedCategory2 = 'SOLIS';
+                          } else if (tappedCategory2.contains('TESLA')) {
+                            selectedCategory2 = 'TESLA';
                           }
                         });
 

@@ -12,6 +12,7 @@ import 'package:ndialog/ndialog.dart';
 import 'package:pakistan_solar_market/constant/colors.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 import 'package:pakistan_solar_market/screens/login_screen.dart';
+import 'package:uuid/uuid.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -22,6 +23,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController phonecontroller = TextEditingController(text: '+92');
   TextEditingController otpController = TextEditingController();
   String verificationId = '';
+
   final TextEditingController fullNameController = TextEditingController();
 
   final DatabaseReference _userRef =
@@ -90,14 +92,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       DatabaseEvent snapshot =
           await _userRef.orderByChild('phone').equalTo(phone).once();
-
+      var uuid = Uuid(); // Uuid object create karen
+      String id = uuid.v4(); // Unique ID generate karen
       if (snapshot.snapshot.value != null) {
         // User already exists, navigate to BottomNavScreen
         Fluttertoast.showToast(
             msg: 'Phone Number is already exists, Use a different Phone no');
       } else {
         // User doesn't exist, proceed with adding to the database
-        String id = DateTime.now().millisecondsSinceEpoch.toString();
+        String date = DateTime.now().millisecondsSinceEpoch.toString();
 
         String? imageUrl;
         if (_image != null) {
@@ -109,12 +112,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
 
         await _userRef.child(id).set({
+          'id': id,
           'fullName': fullName,
           'phone': phone,
           'image': imageUrl, // Storing image URL in the database
         });
 
         await _inverteruserRef.child(id).set({
+          'id': id,
           'fullName': fullName,
           'phone': phone,
           'image': imageUrl, // Storing image URL in the database
@@ -224,108 +229,180 @@ class _RegisterScreenState extends State<RegisterScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Stack(
-                  children: [
-                    CircleAvatar(
-                      radius: 65,
-                      child: ClipOval(
-                        child: _image != null
-                            ? Container(
-                                width: 150,
-                                height: 150,
-                                child: Image.file(
-                                  _image!,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                            : Image.asset("assets/images/logo.png",
-                                fit: BoxFit.cover),
-                      ),
-                    ),
-                    Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: InkWell(
+                Padding(
+                  padding: EdgeInsets.only(right: 30, bottom: 100),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      GestureDetector(
                           onTap: () {
-                            pickImageGallery();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        BottomNavScreen(initialIndex: 0)));
                           },
-                          child: Container(
-                            height: 36,
-                            width: 36,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
+                          child: Text(
+                            "Skip",
+                            style: TextStyle(
                               color: Colors.black,
+                              fontSize: 18,
+                              decoration: TextDecoration.underline,
                             ),
-                            child: Center(
-                                child: Icon(
-                              Icons.camera_alt_outlined,
-                              color: Colors.white,
-                            )),
-                          ),
-                        )),
-                  ],
+                          ))
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 65,
+                        child: ClipOval(
+                          child: _image != null
+                              ? Container(
+                                  width: 150,
+                                  height: 150,
+                                  child: Image.file(
+                                    _image!,
+                                    fit: BoxFit.cover,
+                                  ),
+                                )
+                              : Image.asset("assets/images/logo.png",
+                                  fit: BoxFit.cover),
+                        ),
+                      ),
+                      Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: InkWell(
+                            onTap: () {
+                              pickImageGallery();
+                            },
+                            child: Container(
+                              height: 36,
+                              width: 36,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.black,
+                              ),
+                              child: Center(
+                                  child: Icon(
+                                Icons.camera_alt_outlined,
+                                color: Colors.white,
+                              )),
+                            ),
+                          )),
+                    ],
+                  ),
                 ),
                 SizedBox(
-                  height: 10,
+                  height: 5,
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: fullNameController,
-                    decoration: InputDecoration(
-                      hintText: 'Full Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    inputFormatters: [
-                      FilteringTextInputFormatter.allow(
-                        RegExp(r"[a-zA-Z]+|\s"),
-                      )
-                    ],
-                    validator: nameValidator,
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: phonecontroller,
-                    keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                        hintText: 'Enter your phone number',
+                  child: Container(
+                    height: 50,
+                    child: TextFormField(
+                      controller: fullNameController,
+                      decoration: InputDecoration(
+                        hintText: 'Full Name',
                         border: OutlineInputBorder(),
-                        suffixIcon: TextButton(
-                          onPressed: () => verifyPhone(context),
-                          child: Text(
-                            "Send OTP",
-                            style: TextStyle(color: primaryColor),
-                          ),
-                        )),
-                    validator: phoneValidator,
-                  ),
-                ),
-                SizedBox(height: 15.0),
-                Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: TextFormField(
-                    controller: otpController,
-                    decoration: InputDecoration(
-                      hintText: "Enter Your OTP",
-                      border: OutlineInputBorder(),
+                      ),
+                      inputFormatters: [
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r"[a-zA-Z]+|\s"),
+                        )
+                      ],
+                      validator: nameValidator,
                     ),
                   ),
                 ),
-                SizedBox(height: 16.0),
-                MaterialButton(
-                  color: primaryColor,
-                  onPressed: () {
-                    signInWithPhoneAuthCredential(context);
-                    signUp();
-                  },
-                  child: Text(
-                    'Register',
-                    style: TextStyle(color: Colors.white),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Container(
+                    height: 50,
+                    child: TextFormField(
+                      controller: phonecontroller,
+                      keyboardType: TextInputType.phone,
+                      decoration: InputDecoration(
+                          hintText: 'Enter your phone number',
+                          border: OutlineInputBorder(),
+                          suffixIcon: TextButton(
+                            onPressed: () => verifyPhone(context),
+                            child: Text(
+                              "Send OTP",
+                              style: TextStyle(color: primaryColor),
+                            ),
+                          )),
+                      validator: phoneValidator,
+                    ),
                   ),
                 ),
+                SizedBox(
+                  height: 5,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Container(
+                    height: 50,
+                    child: TextFormField(
+                      controller: otpController,
+                      decoration: InputDecoration(
+                        hintText: "Enter Your OTP",
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                Container(
+                  width: 330,
+                  height: 40,
+                  child: MaterialButton(
+                    color: primaryColor,
+                    onPressed: () {
+                      signInWithPhoneAuthCredential(context);
+                      signUp();
+                    },
+                    child: Text(
+                      'Register',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                Text(
+                  "OR",
+                  style: TextStyle(
+                      color: black, fontWeight: FontWeight.bold, fontSize: 25),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 20),
+                  child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginScreen()));
+                      },
+                      child: Text(
+                        "Login",
+                        style: TextStyle(
+                          color: primaryColor,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                      )),
+                )
               ],
             ),
           ),

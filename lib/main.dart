@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
-import 'package:pakistan_solar_market/screens/login_screen.dart';
 
 
+User? user = FirebaseAuth.instance.currentUser;
+String currentUserId = user?.uid ?? '';
 
 bool isUnavailable = false;
 
@@ -54,9 +56,10 @@ class _MyAppState extends State<MyApp> {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: BottomNavScreen(
-          initialIndex: 0,
-        ),
+        home: BottomNavScreen(initialIndex: 0,),
+
+
+
 
 
 
