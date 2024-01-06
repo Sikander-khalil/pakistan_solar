@@ -92,8 +92,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       DatabaseEvent snapshot =
           await _userRef.orderByChild('phone').equalTo(phone).once();
-      var uuid = Uuid(); // Uuid object create karen
-      String id = uuid.v4(); // Unique ID generate karen
+
       if (snapshot.snapshot.value != null) {
         // User already exists, navigate to BottomNavScreen
         Fluttertoast.showToast(
@@ -111,15 +110,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ''; // You might want to set a default or handle this case accordingly
         }
 
-        await _userRef.child(id).set({
-          'id': id,
+        await _userRef.child(date).set({
+          'id': date,
           'fullName': fullName,
           'phone': phone,
           'image': imageUrl, // Storing image URL in the database
         });
 
-        await _inverteruserRef.child(id).set({
-          'id': id,
+        await _inverteruserRef.child(date).set({
+          'id': date,
           'fullName': fullName,
           'phone': phone,
           'image': imageUrl, // Storing image URL in the database

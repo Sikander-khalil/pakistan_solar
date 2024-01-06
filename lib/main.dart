@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
-
 
 User? user = FirebaseAuth.instance.currentUser;
 String currentUserId = user?.uid ?? '';
@@ -12,8 +12,11 @@ bool isUnavailable = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseMessaging.instance.getInitialMessage();
   runApp(const MyApp());
 }
+
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
@@ -50,20 +53,15 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Pakistan Solar Market',
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: true,
-        ),
-        home: BottomNavScreen(initialIndex: 0,),
-
-
-
-
-
-
-
+      debugShowCheckedModeBanner: false,
+      title: 'Pakistan Solar Market',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: BottomNavScreen(
+        initialIndex: 0,
+      ),
     );
   }
 }

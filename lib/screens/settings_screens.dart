@@ -6,6 +6,7 @@ import 'package:pakistan_solar_market/screens/profile_screen.dart';
 
 import '../constant/colors.dart';
 import 'login_screen.dart';
+import 'notifications_screens.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -152,43 +153,50 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 70,
-                  child: Card(
-                    elevation: 0,
-                    color: white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            "Notifications",
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: InkWell(
-                            onTap: () {},
-                            child: Icon(
-                              Icons.notification_important,
-                              color: primaryColor,
-                              size: 30,
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => NotificationScreen()));
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 70,
+                    child: Card(
+                      elevation: 0,
+                      color: white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "Notifications",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
                             ),
                           ),
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: InkWell(
+                              onTap: () {},
+                              child: Icon(
+                                Icons.notification_important,
+                                color: primaryColor,
+                                size: 30,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
                 GestureDetector(
-                  onTap: (){
-
+                  onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -226,39 +234,39 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                 ),
-                Container(
-                  width: double.infinity,
-                  height: 70,
-                  child: Card(
-                    elevation: 0,
-                    color: white,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: Text(
-                            "Logout",
-                            style: TextStyle(
-                                color: primaryColor,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20),
+                InkWell(
+                  onTap: () {
+                    _logout(context);
+                  },
+                  child: Container(
+                    width: double.infinity,
+                    height: 70,
+                    child: Card(
+                      elevation: 0,
+                      color: white,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Text(
+                              "Logout",
+                              style: TextStyle(
+                                  color: primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20),
+                            ),
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: InkWell(
-                            onTap: () {
-                              _logout(context);
-                            },
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               Icons.logout,
                               color: primaryColor,
                               size: 30,
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 )
