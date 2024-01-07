@@ -60,15 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> verifyPhone(BuildContext context) async {
     ProgressDialog progressDialog = ProgressDialog(
       context,
-      title: const Text(
+      title:  Text(
         'Sending OTP',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      message: const Text(
+      message:  Text(
         'Please wait',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
     );
 
     try {
@@ -102,15 +102,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void signInWithPhoneAuthCredential(BuildContext context) async {
     ProgressDialog progressDialog = ProgressDialog(
       context,
-      title: const Text(
+      title:  Text(
         'Login',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      message: const Text(
+      message:  Text(
         'Please wait',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
     );
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: Text(
                             "Skip",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: black,
                               fontSize: 18,
                               decoration: TextDecoration.underline,
                             ),
@@ -225,7 +225,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                     child: Text(
                       'Login',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
+                      style: TextStyle(color: white, fontSize: 18),
                     ),
                   ),
                 ),

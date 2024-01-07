@@ -12,7 +12,7 @@ import 'package:ndialog/ndialog.dart';
 import 'package:pakistan_solar_market/constant/colors.dart';
 import 'package:pakistan_solar_market/screens/bottom_nav.dart';
 import 'package:pakistan_solar_market/screens/login_screen.dart';
-import 'package:uuid/uuid.dart';
+
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -141,15 +141,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Future<void> verifyPhone(BuildContext context) async {
     ProgressDialog progressDialog = ProgressDialog(
       context,
-      title: const Text(
+      title:  Text(
         'Sending OTP',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      message: const Text(
+      message:  Text(
         'Please wait',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
     );
 
     try {
@@ -183,15 +183,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void signInWithPhoneAuthCredential(BuildContext context) async {
     ProgressDialog progressDialog = ProgressDialog(
       context,
-      title: const Text(
+      title:  Text(
         'Register',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      message: const Text(
+      message:  Text(
         'Please wait',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
     );
 
     PhoneAuthCredential credential = PhoneAuthProvider.credential(
@@ -244,7 +244,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           child: Text(
                             "Skip",
                             style: TextStyle(
-                              color: Colors.black,
+                              color: black,
                               fontSize: 18,
                               decoration: TextDecoration.underline,
                             ),
@@ -284,12 +284,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               width: 36,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(50),
-                                color: Colors.black,
+                                color: black,
                               ),
                               child: Center(
                                   child: Icon(
                                 Icons.camera_alt_outlined,
-                                color: Colors.white,
+                                color: white,
                               )),
                             ),
                           )),
@@ -372,7 +372,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     },
                     child: Text(
                       'Register',
-                      style: TextStyle(color: Colors.white, fontSize: 16),
+                      style: TextStyle(color: white, fontSize: 16),
                     ),
                   ),
                 ),

@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../constant/colors.dart';
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
 
@@ -15,10 +17,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
       child: Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
-            color: Colors.white
+            color: white
           ),
-          backgroundColor: Colors.blueAccent,
-          title: Text("My Notifications",style: TextStyle(color: Colors.white),),
+          backgroundColor: blueAccent,
+          title: Text("My Notifications",style: TextStyle(color: white),),
         ),
         body: Column(
           children: [
@@ -27,27 +29,27 @@ class _NotificationScreenState extends State<NotificationScreen> {
                   itemCount: 3,
                   itemBuilder: (context, index) {
                     return Card(
-                      color: Colors.white70,
+                      color: white70,
                       shape: RoundedRectangleBorder(),
                       child: ListTile(
                         leading: Container(
                           width: 50,
                           height: 50,
                           decoration: BoxDecoration(
-                              color: Colors.blueAccent,
+                              color: blueAccent,
                               borderRadius: BorderRadius.circular(40)),
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: Icon(
                               Icons.notification_important,
-                              color: Colors.white,
+                              color: white,
                             ),
                           ),
                         ),
                         title: Text(
                           "This is title",
                           style: TextStyle(
-                              color: Colors.black, fontWeight: FontWeight.bold),
+                              color: black, fontWeight: FontWeight.bold),
                         ),
                         subtitle: Text("This is body"),
                       ),

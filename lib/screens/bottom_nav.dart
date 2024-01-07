@@ -4,7 +4,7 @@ import 'package:pakistan_solar_market/constant/colors.dart';
 
 import 'package:pakistan_solar_market/screens/register_screen.dart';
 import 'package:pakistan_solar_market/screens/settings_screens.dart';
-import 'package:pakistan_solar_market/widgets/add_post.dart';
+import 'package:pakistan_solar_market/screens/add_post.dart';
 import 'package:pakistan_solar_market/screens/home_screen.dart';
 import 'package:pakistan_solar_market/screens/panel.dart';
 import 'package:pakistan_solar_market/screens/inverter_market.dart';
@@ -61,7 +61,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     },
                     child: Text(
                       "Login",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: white),
                     ),
                   ),
                   MaterialButton(
@@ -75,7 +75,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     },
                     child: Text(
                       "Register",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: white),
                     ),
                   ),
                 ],
@@ -102,7 +102,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     },
                     child: Text(
                       "Login",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: white),
                     ),
                   ),
                   MaterialButton(
@@ -116,7 +116,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                     },
                     child: Text(
                       "Register",
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: white),
                     ),
                   ),
                 ],
@@ -150,7 +150,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
     return Scaffold(
       body: _pages[_tabIndex],
       bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.white,
+        backgroundColor: white,
         selectedLabelStyle: TextStyle(fontSize: 14),
         elevation: 10,
         unselectedLabelStyle: TextStyle(fontSize: 14.0),
@@ -191,7 +191,7 @@ class _BottomNavScreenState extends State<BottomNavScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.add,
-                    color: Colors.white,
+                    color: white,
                   ),
                 )),
             label: '',

@@ -16,7 +16,7 @@ class _VerifyProfileState extends State<VerifyProfile> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.white,
+          backgroundColor: white,
           elevation: 0,
           title: Text(
             'Verify Profile',
@@ -145,14 +145,14 @@ class _VerifyProfileState extends State<VerifyProfile> {
                           )),
                       Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: black,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Icon(
                               Icons.camera_alt,
-                              color: Colors.white,
+                              color: white,
                               size: 20,
                             ),
                           ))
@@ -192,14 +192,14 @@ class _VerifyProfileState extends State<VerifyProfile> {
                       ),
                       Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
+                            color: black,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Icon(
                               Icons.camera_alt,
-                              color: Colors.white,
+                              color: white,
                               size: 20,
                             ),
                           ))
@@ -215,7 +215,7 @@ class _VerifyProfileState extends State<VerifyProfile> {
                       onPressed: () {},
                       child: Text(
                         "Submit",
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(color: white),
                       ),
                     ),
                   )

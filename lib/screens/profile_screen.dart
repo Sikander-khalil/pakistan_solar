@@ -67,7 +67,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         });
 
-        // Update the state outside of the loop
         setState(() {
           userData = userDataFound.isNotEmpty ? userDataFound : null;
         });
@@ -76,7 +75,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       }
     } catch (error) {
       print('Error fetching data: $error');
-      rethrow; // Rethrow the error for better debugging
+      rethrow;
     }
   }
 
@@ -95,39 +94,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> updateProfile() async {
     ProgressDialog progressDialog = ProgressDialog(
       context,
-      title: const Text(
+      title: Text(
         'Profile image is Updating',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      message: const Text(
+      message: Text(
         'Please wait',
-        style: TextStyle(color: Colors.black),
+        style: TextStyle(color: black),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: white,
     );
     if (_image != null) {
-      // Upload the image to Firebase Storage
       String? imageUrl = await uploadImage(_image!);
       if (imageUrl != null) {
         progressDialog.show();
-        // If the image upload was successful, update the user's image URL in the database
+
         await _userRef.child(id).update(
             {'image': imageUrl, 'fullName': nameController.text.trim()});
         setState(() {
-          userData?['image'] =
-              imageUrl; // Update the local userData with the new image URL
+          userData?['image'] = imageUrl;
           userData?['fullName'] = nameController.text.trim();
         });
         progressDialog.dismiss();
         Fluttertoast.showToast(msg: 'Profile image updated successfully!');
-        // Show a message or perform actions after successful update
       } else {
         print('Failed to upload image.');
-        // Show an error message or handle the error accordingly
       }
     } else {
       print('No image selected.');
-      // Show a message to select an image or handle it as needed
     }
   }
 
@@ -173,10 +167,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         child: ClipOval(
                           child: userData != null && _image == null
                               ? Image.network(
-
                                   userData?['image'],
                                   fit: BoxFit.cover,
-                            width: 150.0,
+                                  width: 150.0,
                                 )
                               : _image != null
                                   ? Image.file(
@@ -198,12 +191,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             width: 36,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(50),
-                              color: Colors.black,
+                              color: black,
                             ),
                             child: Center(
                               child: Icon(
                                 Icons.edit,
-                                color: Colors.white,
+                                color: white,
                               ),
                             ),
                           ),
