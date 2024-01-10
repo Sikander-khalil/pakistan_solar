@@ -1,7 +1,14 @@
+import 'dart:convert';
+
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+
+import 'package:pakistan_solar_market/screens/register_screen.dart';
 import 'package:pakistan_solar_market/widgets/panel_categoryWidget.dart';
 import 'package:pakistan_solar_market/widgets/panelWidgets.dart';
 
@@ -21,7 +28,7 @@ class _PanelMarketState extends State<PanelMarket>
   User? user = FirebaseAuth.instance.currentUser;
   double? marketRatePrice;
 
-  TextEditingController bidController = TextEditingController();
+
 
   List<Map<String, dynamic>> userData = [];
   List<Map<String, dynamic>> userData2 = [];
@@ -109,71 +116,75 @@ class _PanelMarketState extends State<PanelMarket>
 
     DateTime currentDate = DateTime.now();
 
-    String formattedDate = DateFormat('dd MMMM yyyy').format(currentDate);
+    String formattedDate = DateFormat('dd MMM').format(currentDate);
     return SafeArea(
       child: Scaffold(
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset(
-                  "assets/images/bismallah.png",
-                  fit: BoxFit.cover,
-                  height: screenHeight! * .09,
-                  width: screenWidth! * .5,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.all(screenWidth! * 0.03),
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: white,
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            Container(
+              height: 80,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Image.asset(
+                      "assets/images/logo.png",
+                      fit: BoxFit.cover,
+                      width: screenWidth! * 0.42,
+                      height: screenHeight! * 0.12 ,
+
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 20, right: 10),
+                      child: Image.asset(
+                        "assets/images/bismallah1.png",
+                        fit: BoxFit.contain,
+                        width: screenWidth! * 0.22,
+                        height: screenHeight! * 0.22 ,
+
+                      ),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(left: 6),
+                      child: RichText(
+                        text: TextSpan(
                           children: [
-                            Text(
-                              formattedDate,
+                            TextSpan(
+                              text: '$formattedDate\n',
                               style: TextStyle(
-                                  color: black,
-                                  fontSize: 17,
-                                  fontWeight: FontWeight.bold),
+                                color: Color(0xff05bc64),
+                                fontSize: screenWidth! * 0.08,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                            marketRatePrice != null
-                                ? Text(
-                                    marketRatePrice.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                : CircularProgressIndicator(),
+                            WidgetSpan(
+                              alignment: PlaceholderAlignment.middle,
+                              child: SizedBox(
+                                width: 40.0, // Adjust the width to set the desired padding
+                                child: Text(''), // Adding an empty text as a placeholder
+                              ),
+                            ),
+                            TextSpan(
+                              text: '\$${marketRatePrice.toString()}',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
+
+
+
+                    )
+
+                  ],),
               ),
-            ),
-            SizedBox(
-              height: 5,
             ),
             TabBar(
               indicatorColor: primaryColor,
@@ -191,7 +202,7 @@ class _PanelMarketState extends State<PanelMarket>
                 child: TabBarView(
               controller: _tabController,
               children: [
-                PanelCategoryWidget.buildCategoryList(userData, context),
+                 PanelCategoryWidget.buildCategoryList(userData, context),
                 PanelCategoryWidget.buildCategoryList(userData2, context),
                 PanelCategoryWidget.buildCategoryList(userData3, context),
                 PanelCategoryWidget.buildCategoryList(userData4, context)
@@ -202,4 +213,5 @@ class _PanelMarketState extends State<PanelMarket>
       ),
     );
   }
+
 }

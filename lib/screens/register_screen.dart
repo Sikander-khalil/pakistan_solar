@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -87,6 +88,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> signUp() async {
     try {
+
+      String? fcmtoken = await FirebaseMessaging.instance.getToken();
       String fullName = fullNameController.text.trim();
       String phone = phonecontroller.text.trim();
 
@@ -94,31 +97,35 @@ class _RegisterScreenState extends State<RegisterScreen> {
           await _userRef.orderByChild('phone').equalTo(phone).once();
 
       if (snapshot.snapshot.value != null) {
-        // User already exists, navigate to BottomNavScreen
+
         Fluttertoast.showToast(
             msg: 'Phone Number is already exists, Use a different Phone no');
       } else {
-        // User doesn't exist, proceed with adding to the database
+
         String date = DateTime.now().millisecondsSinceEpoch.toString();
 
         String? imageUrl;
         if (_image != null) {
           imageUrl = await uploadImage(_image!);
         } else {
-          // Handle if no image is uploaded
+
           imageUrl =
-              ''; // You might want to set a default or handle this case accordingly
+              '';
         }
 
         await _userRef.child(date).set({
+
           'id': date,
+           'token': fcmtoken,
           'fullName': fullName,
           'phone': phone,
-          'image': imageUrl, // Storing image URL in the database
+          'image': imageUrl,
         });
 
         await _inverteruserRef.child(date).set({
+
           'id': date,
+          'token': fcmtoken,
           'fullName': fullName,
           'phone': phone,
           'image': imageUrl, // Storing image URL in the database
@@ -209,6 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       print(e.message);
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

@@ -22,7 +22,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
 
   String _inverterselectedValue = ''; // Initially empty
   String _selectedValue2 = ''; // Initially emp
-
+  String? day;
+  String? month;
+  String? year;
   String _inverterselectedValue2 = ''; // Initially emp
 
   Map<String, List<String>> _DropdownValues = {
@@ -43,7 +45,6 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
     'LEVOLTEC': ['6KW'],
     'KNOX': ['6KW'],
     'TESLA': ['6KW'],
-
   };
 
   User? user = FirebaseAuth.instance.currentUser;
@@ -70,7 +71,6 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
 
   TextEditingController numberController = TextEditingController();
   TextEditingController priceController = TextEditingController();
-  TextEditingController availableController = TextEditingController();
 
   TextEditingController inverternumberController = TextEditingController();
   TextEditingController inverterpriceController = TextEditingController();
@@ -81,12 +81,19 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
   dynamic userkey;
   dynamic userkey2;
 
+  late List<String> _availability;
+  late String _selectedValue3;
+  late DateTime? _selectedDate;
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     getAllUserData();
     getAllUserData2();
+    _availability = ["Ready Stock", "Availability"];
+    _selectedValue3 = "";
+    _selectedDate = null;
   }
 
   Future<void> getAllUserData() async {
@@ -365,11 +372,12 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         'NUMBER',
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10,left: 10),
+                      padding: const EdgeInsets.only(top: 10, left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
@@ -393,7 +401,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                   child: ListTile(
                     title: Text(
                       'SIZE',
-                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -443,7 +452,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       child: Text(
                         'PRICE IN RS',
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                     ),
                     subtitle: Padding(
@@ -480,7 +491,9 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                     title: Text(
                       'LOCATION',
                       style: TextStyle(
-                          color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -526,27 +539,68 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
               padding: EdgeInsets.only(left: 28.0),
               child: Text(
                 "AVAILABILITY",
-                style:
-                    TextStyle(color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 15),
               ),
             ),
             SizedBox(
               height: 10,
             ),
+
             Padding(
-              padding: EdgeInsets.only(left: 30.0, right: 30),
+              padding: const EdgeInsets.only(left: 30, right: 30),
               child: Container(
-                height: 55,
-                child: TextFormField(
-                  controller: availableController,
-                  decoration: InputDecoration(
-                      hintText: "Enter Availality",
-                      border: OutlineInputBorder()),
+                height: 70,
+                width: 290,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    DropdownButtonFormField<String>(
+                      items: _availability.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (newValue) {
+                        setState(() {
+                          _selectedValue3 = newValue!;
+                          if (_selectedValue3 == "Availability") {
+                            _showDatePicker(context);
+                          }
+                        });
+                      },
+                      value:
+                          _selectedValue3.isNotEmpty ? _selectedValue3 : null,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        contentPadding: EdgeInsets.fromLTRB(10, 20, 10, 20),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        hintText: 'Select Availability',
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
+
             SizedBox(
               height: 15,
+            ),
+            _selectedDate != null
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 30),
+                    child: Text(
+                      _getFormattedDate(_selectedDate!),
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  )
+                : Container(), // Show the selected date separately
+            SizedBox(
+              height: 5,
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -559,12 +613,11 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       onPressed: () async {
                         var number = numberController.text.trim();
                         var price = priceController.text.trim();
-                        var available = availableController.text.trim();
+
                         if (user != null &&
                             userkey != null &&
                             number.isNotEmpty &&
                             price.isNotEmpty &&
-                            available.isNotEmpty &&
                             _selectedValue2.isNotEmpty &&
                             _selectedSize.isNotEmpty &&
                             _selectedLocation.isNotEmpty &&
@@ -624,14 +677,16 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                                 'Size': _selectedSize,
                                 'Price': price,
                                 'Location': _selectedLocation,
-                                'Available': available,
+                                'Available': _selectedDate != null
+                                    ? '$day:$month:$year'
+                                    : _selectedValue3,
                               });
                               _userRef2.child(id).set(data2);
                               progressDialog.dismiss();
                               numberController.clear();
 
                               priceController.clear();
-                              availableController.clear();
+
                               setState(() {
                                 _selectedValue2 = '';
                                 _selectedValue = '';
@@ -861,11 +916,12 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       padding: const EdgeInsets.only(left: 10),
                       child: Text(
                         'NUMBER',
-                        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 15),
                       ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10,left: 10),
+                      padding: const EdgeInsets.only(top: 10, left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
@@ -889,7 +945,8 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                   child: ListTile(
                     title: Text(
                       'SIZE',
-                      style: TextStyle(fontWeight: FontWeight.bold,fontSize: 15),
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                     ),
                     subtitle: Padding(
                       padding: const EdgeInsets.only(top: 10),
@@ -940,11 +997,13 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
                       child: Text(
                         'PRICE IN RS',
                         style: TextStyle(
-                            color: Colors.black, fontWeight: FontWeight.bold,fontSize: 15),
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15),
                       ),
                     ),
                     subtitle: Padding(
-                      padding: const EdgeInsets.only(top: 10,left: 10),
+                      padding: const EdgeInsets.only(top: 10, left: 10),
                       child: Container(
                         height: 60,
                         child: TextFormField(
@@ -1171,5 +1230,34 @@ class _AddPostState extends State<AddPost> with SingleTickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  void _showDatePicker(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    }
+  }
+
+  String _getFormattedDate(DateTime date) {
+    day = _getTwoDigitFormat(date.day);
+    month = _getTwoDigitFormat(date.month);
+    year = date.year
+        .toString()
+        .substring(2); // Extract last two digits of the year
+
+    return "$day:$month:$year";
+  }
+
+  String _getTwoDigitFormat(int value) {
+    return value.toString().padLeft(2, '0');
   }
 }

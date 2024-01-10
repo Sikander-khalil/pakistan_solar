@@ -385,73 +385,63 @@ class _HomeScreenState extends State<HomeScreen>
 
     DateTime currentDate = DateTime.now();
 
-    String formattedDate = DateFormat('dd MMMM yyyy').format(currentDate);
+    String formattedDate = DateFormat('dd MMM').format(currentDate);
     return SafeArea(
       child: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
                 Image.asset(
-                  "assets/images/bismallah.png",
+                  "assets/images/logo.png",
                   fit: BoxFit.cover,
-                  height: screenHeight * .09,
-                  width: screenWidth * .5,
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 1,
-            ),
-            Padding(
-              padding: EdgeInsets.all(screenWidth * 0.03),
-              child: Container(
-                width: double.infinity,
-                height: 50,
-                decoration: BoxDecoration(
-                  color: white,
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(0),
-                ),
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
+                  width: 150,
+                  height: 150,
 
-                            Text(
-                              formattedDate,
-                              style: TextStyle(
-                                  color: black,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            marketRatePrice != null
-                                ? Text(
-                                    marketRatePrice.toString(),
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  )
-                                : CircularProgressIndicator(),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
                 ),
-              ),
+                Image.asset(
+                  "assets/images/bismallah1.png",
+                  fit: BoxFit.contain,
+                  width: 120,
+                  height: 50,
+
+                ),
+
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15),
+                    child: Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '$formattedDate\n',
+                            style: TextStyle(
+                              color: primaryColor,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          TextSpan(
+                            text: '\$${marketRatePrice.toString()}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+
+                ],),
             ),
-            SizedBox(
-              height: 5,
-            ),
+
+
             downlaodUrl != null && downlaodUrl!.isNotEmpty
                 ? Center(
                     child: Image.network(
